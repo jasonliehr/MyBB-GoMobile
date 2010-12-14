@@ -2032,8 +2032,7 @@ a.threadlist_closed {
 		<template name="announcement_quickdelete" version="1600"><![CDATA[<a href="modcp.php?action=delete_announcement&amp;aid={$post['aid']}&amp;my_post_key={$mybb->post_code}" onclick="if(confirm(&quot;{$lang->announcement_quickdelete_confirm}&quot;))window.location=this.href.replace('action=delete_announcement','action=do_delete_announcement');return false;" class="button">{$lang->gomobile_post_delete}</a>]]></template>
 		<template name="announcement_edit" version="1600"><![CDATA[<a href="modcp.php?action=edit_announcement&amp;aid={$post['aid']}&amp;fid={$fid}" class="button">{$lang->gomobile_post_edit}</a>]]></template>
 		<template name="forumdisplay_announcements_announcement" version="1600"><![CDATA[<tr>
-<td align="center" class="{$bgcolor}" width="2%"><img src="{$theme['imgdir']}/{$folder}.gif" alt=""/></td>
-<td class="{$bgcolor}" colspan="4">
+<td class="{$bgcolor}" colspan="3">
 	<a href="{$announcement['announcementlink']}"{$new_class}>{$announcement['subject']}</a>
 	<div class="author smalltext">{$announcement['profilelink']}</div>
 </td>
