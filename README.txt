@@ -1,6 +1,6 @@
 MyBB GoMobile Readme
 
--- This product is licensed under the GNU/GPL v3 license, meaning you are free to do anything within the scope of the license. However, as this is a private beta, we ask that you keep it to yourself until the full public version is released. Inside this .zip you should find a License.txt file, which contains a copy of the GNU/GPL v3 license.
+-- This product is licensed under the GNU/GPL v3 license, meaning you are free to do anything within the scope of the license. Within this package, you should find a copy of the license titled 'License.txt'.
 
 -- This is designed for MyBB 1.6. As with any beta plugin, please backup your database before proceeding. If you want to install this on 1.4, proceed with caution - though this is not supported. We are not responsible for any damage caused to your forums/website due to misconfiguration/misuse on either 1.4 or 1.6.
 
