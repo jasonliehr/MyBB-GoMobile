@@ -80,9 +80,8 @@ $l['gomobile_lastpost'] = "Last post: ";
 $l['gomobile_orderby'] = "Order by: ";
 $l['gomobile_forum'] = "Forum: ";
 $l['gomobile_by'] = "By: ";
-$l['gomobile_firstpage'] = "First Page";
-$l['gomobile_lastpage'] = "Last Page";
-$l['gomobile_lastpost2'] = "Last Post";
+$l['gomobile_jump_fpost'] = "First Post";
+$l['gomobile_jump_lpost'] = "Last Post";
 $l['gomobile_votes'] = "Votes";
 
 $l['gomobile_ucp_username'] = "Username:";
