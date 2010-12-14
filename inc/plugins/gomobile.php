@@ -1,10 +1,8 @@
 <?php
 /*
-	MyBB GoMobile plugin - based on UA Theme. Notices below.
-
-	UA Theme 1.0.1 - Forces user agents matching a regex to use a certain theme
-	(Useful for mobile versions of a forum)
-
+	MyBB GoMobile - Version: 1.0 Beta 2
+	Based on UA Theme. Notices below.
+	
 	Copyright (c) 2010, Fawkes Software
 	All rights reserved.
 
@@ -29,8 +27,6 @@
 	BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
 	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 	ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-	inc/plugins/gomobile.php: The brunt of the work is done here.
 */
 
 // Disallow direct access to this file for security reasons
@@ -258,13 +254,6 @@ function gomobile_install()
 			"optionscode"	=> "text",
 			"value"			=> $mybb->settings['homeurl'],
 			"disporder"		=> "6"
-		),
-		"gomobile_urltype" => array(
-			"title"			=> "URL Type",
-			"description"	=> "Please select the appropriate URL type of your board (such as Google SEO URLs).",
-			"optionscode"	=> "select\ndefault=Default URLs\nstock=Stock MyBB SEO URLs\ngseo=Google SEO URLs",
-			"value"			=> "default",
-			"disporder"		=> "7"
 		)
 	);
 
@@ -282,12 +271,13 @@ function gomobile_install()
 
 function gomobile_is_installed()
 {
-	global $db;
+    global $db;
 
-	// Do some fancy stuff that Scoutie44 doesn't understand o.O
-	return $db->table_exists("gomobile");
-
-	$db->query("ALTER TABLE ".TABLE_PREFIX."posts DROP COLUMN mobile");
+    if($db->table_exists("gomobile"))
+    {
+        // The gomobile database table exists, so it must be installed.
+        return true;
+    }
 }
 
 function gomobile_uninstall()
@@ -315,7 +305,6 @@ function gomobile_uninstall()
 	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='gomobile_theme_id'");
 	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='gomobile_homename'");
 	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='gomobile_homelink'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='gomobile_urltype'");
 }
 
 function gomobile_forcetheme()
@@ -416,34 +405,15 @@ function gomobile_showthread()
 {
 	global $mybb, $lang, $postcount, $perpage, $thread, $pagejump;
 	
-	// Get our templates ready
-	$pj_default = "<div class=\"float_left\" style=\"padding-top: 12px;\">
-		<a href=\"showthread.php?tid={$thread['tid']}&page=1\" class=\"pagination_a\">{$lang->gomobile_firstpage}</a>
-		<a href=\"showthread.php?tid={$thread['tid']}&page=last\" class=\"pagination_a\">{$lang->gomobile_lastpage}</a>
-	</div>";
-	$pj_stock = "<div class=\"float_left\" style=\"padding-top: 12px;\">
-		<a href=\"thread-{$thread['tid']}.html\" class=\"pagination_a\">{$lang->gomobile_firstpage}</a>
-		<a href=\"thread-{$thread['tid']}-lastpost.html\" class=\"pagination_a\">{$lang->gomobile_lastpost2}</a>
-	</div>";
-	$pj_gseo = "<div class=\"float_left\" style=\"padding-top: 12px;\">
-		<a href=\"showthread.php?tid={$thread['tid']}\" class=\"pagination_a\">{$lang->gomobile_firstpage}</a>
-		<a href=\"showthread.php?tid={$thread['tid']}&action=lastpost\" class=\"pagination_a\">{$lang->gomobile_lastpost2}</a>
-	</div>";
+	// The jumper code
+	$pj_template = "<div class=\"float_left\" style=\"padding-top: 12px;\">
+        <a href=\"".get_thread_link($thread['tid'], 1)."\" class=\"pagination_a\">{$lang->gomobile_jump_fpost}</a>
+        <a href=\"".get_thread_link($thread['tid'], 0, 'lastpost')."\" class=\"pagination_a\">{$lang->gomobile_jump_lpost}</a>
+    </div>"; 
 	
 	// Figure out if we're going to display the first/last page jump
 	if($postcount > $perpage){
-		if($mybb->settings['gomobile_urltype'] == "stock") {
-			// We're using stock MyBB SEF URLs
-			$pagejump = $pj_stock;
-		}
-		elseif($mybb->settings['gomobile_urltype'] == "gseo") {
-			// We're using Google SEF URLs
-			$pagejump = $pj_gseo;
-		}
-		else {
-			// We're using either the default, non-SEF URLs, or some foreign system
-			$pagejump = $pj_default;
-		}
+		$pagejump = $pj_template;
 	}
 }
 
@@ -804,7 +774,4 @@ function gomobile_switch_version()
 	$lang->load("gomobile");
 	redirect($url, $lang->gomobile_switched_version);
 }
-
-// v1.0 completed @ 3:20AM. Yay, insomnia! :3
-// UA Theme - A furry product
 ?>
