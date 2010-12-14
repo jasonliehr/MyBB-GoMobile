@@ -1,6 +1,7 @@
 <?php
 /*
-	MyBB GoMobile plugin - based on UA Theme. Notices below.
+	MyBB GoMobile - Version: 1.0 Beta 2
+	Dased on UA Theme. Notices below.
 
 	UA Theme 1.0.1 - Forces user agents matching a regex to use a certain theme
 	(Useful for mobile versions of a forum)
@@ -778,7 +779,4 @@ function gomobile_switch_version()
 	$lang->load("gomobile");
 	redirect($url, $lang->gomobile_switched_version);
 }
-
-// v1.0 completed @ 3:20AM. Yay, insomnia! :3
-// UA Theme - A furry product
 ?>
