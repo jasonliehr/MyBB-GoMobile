@@ -178,7 +178,7 @@ function gomobile_install()
 		"/SonyEricsson(.+?)/i",
 		"/AvantGo(.+?)/i",
 		"/DoCoMo(.+?)/i",
-		"/Pre(.+?)/i",
+		"/Pre\/(.+?)/i",
 		"/UP.Browser(.+?)/i"
 	);
 
