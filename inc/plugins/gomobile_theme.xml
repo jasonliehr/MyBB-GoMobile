@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="GoMobile 1.0 Beta 2" version="1600">
+<theme name="GoMobile 1.0 Beta 2" version="1601">
 	<properties>
 		<templateset><![CDATA[13]]></templateset>
 		<editortheme><![CDATA[default]]></editortheme>
@@ -1129,7 +1129,7 @@ a.threadlist_closed {
 		<template name="showthread_poll_resultbit" version="1600"><![CDATA[<tr>
 <td class="{$optionbg}" align="right">{$option}{$votestar}
 <div class="lastbytext">{$votes} {$lang->gomobile_votes}, {$percent}%</div></td>
-<td class="{$optionbg}"><img src="{$theme['imgdir']}/pollbar-s.gif" alt="" /><img src="{$theme['imgdir']}/pollbar.gif" width="{$imagewidth}" height="10" alt="{$percent}%" title="{$percent}%" /><img src="{$theme['imgdir']}/pollbar-e.gif" alt="" /></td>
+<td class="{$optionbg}"><img src="{$theme['imgdir']}/pollbar-s.png" width="5" height="10" alt="" /><img src="{$theme['imgdir']}/pollbar.png" width="{$imagewidth}" height="10" alt="{$percent}%" title="{$percent}%" /><img src="{$theme['imgdir']}/pollbar-e.png" height="10" width="5" alt="" /></td>
 </tr>]]></template>
 		<template name="showthread_poll_results" version="1600"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -4149,7 +4149,6 @@ a.threadlist_closed {
 		<template name="postbit_replyall_pm" version="1600"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=replyall" class="button">{$lang->gomobile_pm_replyall}</a>]]></template>
 		<template name="private_messagebit" version="1600"><![CDATA[<tr>
 <td class="trow2" align="center"><input type="checkbox" class="checkbox" name="check[{$message['pmid']}]" value="1" /></td>
-<td align="center" class="trow1" width="1"><img src="{$theme['imgdir']}/{$msgfolder}" alt="{$msgalt}" title="{$msgalt}" /></td>
 <td class="trow1">{$msgprefix}<a href="private.php?action=read&amp;pmid={$message['pmid']}">{$message['subject']}</a>{$msgsuffix}{$denyreceipt}<br /><span class="lastbytext">{$senddate} {$sendtime}</span></td>
 <td align="right" class="trow2" style="white-space: nowrap;">{$tofromusername}</td>
 </tr>]]></template>
@@ -4252,7 +4251,7 @@ a.threadlist_closed {
 </tr>
 <tr>
 <td class="tcat" align="center" width="1%" style="white-space: nowrap"><span class="smalltext"><input name="allbox" title="{$lang->check_all}" type="checkbox" class="checkbox checkall" value="{$lang->check_all}" /></span></td>
-<td class="tcat" width="75%" colspan="2"><span class="smalltext"><strong>{$lang->message_title}</strong></span></td>
+<td class="tcat" width="75%"><span class="smalltext"><strong>{$lang->message_title}</strong></span></td>
 <td class="tcat" align="right" width="24%" style="white-space: nowrap"><span class="smalltext"><strong>{$sender}</strong></span></td>
 </tr>
 {$messagelist}
