@@ -665,10 +665,47 @@ function gomobile_admin()
 			admin_redirect('index.php?module=config/gomobile');
 		}
 	}
+	elseif($mybb->input['action'] == 'tool_update_tid') {
+		if ($mybb->request_method == "post") {
+			if($mybb->settings['gomobile_theme_id'] != "-2" && $mybb->settings['gomobile_theme_id'] != "0") {
+				$update_array = array(
+					'tid' => $mybb->settings['gomobile_theme_id']
+				);
+				$db->update_query("gomobile", $update_array); 
+			}
+			else {
+				flash_message("The GoMobile Theme ID setting is not configured properly. Please adjust that setting and run the tool again.", 'error');
+				admin_redirect("index.php?module=config/gomobile");
+			}
+		
+			flash_message("The TIDs have been updated.", 'success');
+			admin_redirect("index.php?module=config/gomobile");
+		}
+		else {
+			admin_redirect("index.php?module=config/gomobile");
+		}
+	}
 	else
 	{
 		// This is the main menu
 		$page->output_header($lang->gomobile);
+		
+		// Tool List
+		$form = new Form("index.php?module=config/gomobile&amp;action=tool_update_tid", "post");
+	
+		// Set up the headers
+		$form_container = new FormContainer($lang->gomobile_tools);
+		$form_container->output_row_header($lang->gomobile_tool);
+		$form_container->output_row_header($lang->gomobile_run_tool, array('class' => 'align_center', 'width' => 155));
+	
+		// Tool: update tids
+		$form_container->output_cell("<label>{$lang->gomobile_update_tid}</label><div class=\"description\">{$lang->gomobile_update_tid_desc}</div>");
+		$form_container->output_cell($form->generate_submit_button($lang->gomobile_run_tool, array("name" => "submit")), array('class' => 'align_center', 'width' => 155));
+		$form_container->construct_row();
+	
+		// End of the tools
+		$form_container->end();
+		$form->end();
 
 		// Make a box for the menu
 		$table = new Table;
