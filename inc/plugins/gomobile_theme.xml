@@ -3554,7 +3554,7 @@ a.threadlist_closed {
 </script>
 </div><br />]]></template>
 		<template name="postbit_inlinecheck" version="1601"><![CDATA[<input type="checkbox" class="checkbox" name="inlinemod_{$post['pid']}" id="inlinemod_{$post['pid']}" value="1" style="vertical-align: middle; margin: 0;" {$inlinecheck} />]]></template>
-		<template name="showthread_moderationoptions" version="1413"><![CDATA[<div class="modbox">
+		<template name="showthread_moderationoptions" version="1601"><![CDATA[<div class="modbox">
 {$inlinemod}
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;" id="moderator_options">
 	<input type="hidden" name="modtype" value="thread" />
@@ -3563,6 +3563,7 @@ a.threadlist_closed {
 	<span class="smalltext">
 	<strong>{$lang->moderation_options}</strong></span><br />
 	<select name="action" onchange="$('moderator_options').submit();">
+		<option value="delayedmoderation">{$lang->delayed_moderation}</option>
 		<optgroup label="{$lang->standard_mod_tools}">
 			<option value="threadnotes" selected="selected">{$lang->thread_notes}</option>
 			<option value="openclosethread">{$lang->open_close_thread}</option>
