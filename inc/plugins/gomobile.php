@@ -1,6 +1,6 @@
 <?php
 /*
-	MyBB GoMobile - Version: 1.0 Beta 2
+	MyBB GoMobile - Version: 1.0 Beta 3
 	Based on UA Theme. Notices below.
 	
 	Copyright (c) 2010, Fawkes Software
@@ -84,7 +84,7 @@ function gomobile_info()
 		"website"		=> "http://www.mybbgm.com",
 		"author"		=> "MyBB GoMobile",
 		"authorsite"	=> "http://www.mybbgm.com",
-		"version"		=> "1.0 Beta 2",
+		"version"		=> "1.0 Beta 3",
 		"compatibility" => "14*, 16*"
 	);
 }
