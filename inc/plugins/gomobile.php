@@ -150,7 +150,7 @@ function gomobile_install()
 			$options = array(
 				'no_stylesheets' => 0,
 				'no_templates' => 0,
-				'version_compat' => 0,
+				'version_compat' => 1,
 				'parent' => 1,
 				'force_name_check' => true,
 			);
