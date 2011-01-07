@@ -46,7 +46,7 @@ $l['gomobile_saved'] = "Regex saved!";
 $l['gomobile_mobile_version'] = "Mobile Version";
 
 // Edit these before installing if you are translating
-$l['gomobile_settings_mobile_text'] = "Use this setting to shorten both your header and breadcrumb (navigation) text. You may use full HTML formatting.";
+$l['gomobile_settings_mobile_name'] = "Use this setting to shorten both your header and breadcrumb (navigation) text. You may use full HTML formatting.";
 $l['gomobile_settings_redirect_enabled'] = "Enable or disable the GoMobile portal redirect. Enabling this will automatically redirect users who visit to portal on their mobile, to a page of your choice instead.";
 $l['gomobile_settings_redirect_location'] = "Enter the location (relative) that you would like to redirect users to. Ignore this if the redirect option above is not enabled.";
 $l['gomobile_settings_theme_id'] = "Enter the tid (Theme ID) of GoMobile below. This is used to switch the user to the mobile version.";
