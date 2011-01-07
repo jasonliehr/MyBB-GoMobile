@@ -329,7 +329,7 @@ function gomobile_forcetheme()
 	}
 	
 	// Fetch the theme permissions from the database
-	$tquery = $db->simple_select("themes", "*", "name like '%gomobile%'");
+	$tquery = $db->simple_select("themes", "*", "tid like '{$mybb->settings['gomobile_theme_id']}'");
 	$tperms = $db->fetch_field($tquery, "allowedgroups");
 	if($tperms != "all") {
 		$canuse = explode(",", $tperms);
