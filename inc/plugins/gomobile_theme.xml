@@ -2712,7 +2712,7 @@ a.threadlist_closed {
 			{$welcomeblock}
 		</div>
 		<div id="logo">
-			<a href="{$mybb->settings['bburl']}/index.php">{$mybb->settings['gomobile_header_text']}</a>
+			<a href="{$mybb->settings['bburl']}/index.php">{$mybb->settings['gomobile_mobile_name']}</a>
 		</div>
 		<div id="menu">
 			<a href="{$mybb->settings['bburl']}/search.php?action=getnew">{$lang->welcome_newposts}</a>
