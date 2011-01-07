@@ -211,7 +211,7 @@ function gomobile_install()
 	$settings = array(
 		"gomobile_mobile_name" => array(
 			"title"			=> "Mobile Board Name",
-			"description"	=> $lang->gomobile_settings_mobile_text,
+			"description"	=> $lang->gomobile_settings_mobile_name,
 			"optionscode"	=> "text",
 			"value"			=> $mybb->settings['bbname'],
 			"disporder"		=> "1"
