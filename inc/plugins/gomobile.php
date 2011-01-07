@@ -91,7 +91,7 @@ function gomobile_info()
 
 function gomobile_install()
 {
-	global $db, $mybb;
+	global $db, $mybb, $lang;
 
 	// Install the right database table for our database type
 	switch($mybb->config['database']['type'])
@@ -209,7 +209,7 @@ function gomobile_install()
 	$gid = $db->insert_query("settinggroups", $setting_group);
 
 	$settings = array(
-		"gomobile_mobile_text" => array(
+		"gomobile_mobile_name" => array(
 			"title"			=> "Mobile Board Name",
 			"description"	=> $lang->gomobile_settings_mobile_text,
 			"optionscode"	=> "text",
@@ -379,7 +379,7 @@ function gomobile_forcefooter()
     {
         // Override default breadcrumb bbname (for mobile theme only)
         $navbits = array();
-        $navbits[0]['name'] = $mybb->settings['gomobile_header_text'];
+        $navbits[0]['name'] = $mybb->settings['gomobile_mobile_name'];
         $navbits[0]['url'] = $mybb->settings['bburl']."/index.php";    
     }
 } 
