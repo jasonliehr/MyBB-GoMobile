@@ -100,22 +100,19 @@ function gomobile_install()
 			$db->query("CREATE TABLE ".TABLE_PREFIX."gomobile (
 				gmtid serial,
 				regex varchar(120) NOT NULL default '',
-				tid int NOT NULL default '2',
 				PRIMARY KEY (gmtid)
 			);");
 			break;
 		case "sqlite":
 			$db->query("CREATE TABLE ".TABLE_PREFIX."gomobile (
 				gmtid INTEGER PRIMARY KEY,
-				regex varchar(120) NOT NULL default '',
-				tid int(10) NOT NULL default '2')
+				regex varchar(120) NOT NULL default '')
 			);");
 			break;
 		default:
 			$db->query("CREATE TABLE ".TABLE_PREFIX."gomobile (
 				gmtid int(10) unsigned NOT NULL auto_increment,
 				regex varchar(120) NOT NULL default '',
-				tid int(10) NOT NULL default '2',
 				PRIMARY KEY(gmtid)
 			) TYPE=MyISAM;");
 	}
@@ -187,8 +184,7 @@ function gomobile_install()
 	{
 		$gomobile = array(
 			"gmtid" => -1,
-			"regex" => $db->escape_string($data),
-			"tid" => $theme
+			"regex" => $db->escape_string($data)
 		);
 
 		$db->insert_query("gomobile", $gomobile);
@@ -213,44 +209,44 @@ function gomobile_install()
 	$gid = $db->insert_query("settinggroups", $setting_group);
 
 	$settings = array(
-		"gomobile_header_text" => array(
+		"gomobile_mobile_text" => array(
 			"title"			=> "Mobile Board Name",
-			"description"	=> "Use this setting to shorten both your header and breadcrumb (navigation) text. You may use full HTML formatting.",
+			"description"	=> $lang->gomobile_settings_mobile_text,
 			"optionscode"	=> "text",
 			"value"			=> $mybb->settings['bbname'],
 			"disporder"		=> "1"
 		),
 		"gomobile_redirect_enabled" => array(
 			"title"			=> "Enable Redirect?",
-			"description"	=> "Enable or disable the GoMobile portal redirect. Enabling this will automatically redirect users who visit to portal on their mobile, to a page of your choice instead.",
+			"description"	=> $lang->gomobile_settings_redirect_enabled,
 			"optionscode"	=> "yesno",
 			"value"			=> "0",
 			"disporder"		=> "2",
 		),
 		"gomobile_redirect_location" => array(
 			"title"			=> "Redirect where?",
-			"description"	=> "Enter the location (relative) that you would like to redirect users to. Ignore this if the redirect option above is not enabled.",
+			"description"	=> $lang->gomobile_settings_redirect_location,
 			"optionscode"	=> "text",
 			"value"			=> "index.php",
 			"disporder"		=> "3"
 		),
 		"gomobile_theme_id" => array(
 			"title"			=> "Theme ID",
-			"description"	=> "Enter MyBB GoMobile\'s Theme ID (tid) below. This is used to determine whether or not the user will be redirected, and also as a quicker method of checking against GoMobile\'s theme id.",
+			"description"	=> $lang->gomobile_settings_theme_id,
 			"optionscode"	=> "text",
 			"value"			=> $theme,
 			"disporder"		=> "4"
 		),
 		"gomobile_homename" => array(
 			"title"			=> "Home Name",
-			"description"	=> "This is the text that will appear in the footer of GoMobile in place of the home link. It is recommended that you keep this to as few charaters as possible.",
+			"description"	=> $lang->gomobile_settings_homename,
 			"optionscode"	=> "text",
 			"value"			=> $mybb->settings['homename'],
 			"disporder"		=> "5"
 		),
 		"gomobile_homelink" => array(
 			"title"			=> "Home Link",
-			"description"	=> "Below is the link that appears in the footer of GoMobile.",
+			"description"	=> $lang->gomobile_settings_homelink,
 			"optionscode"	=> "text",
 			"value"			=> $mybb->settings['homeurl'],
 			"disporder"		=> "6"
@@ -352,7 +348,7 @@ function gomobile_forcetheme()
 	}
 
 	// Fetch the list of User Agent strings
-	$query = $db->simple_select("gomobile", "regex, tid");
+	$query = $db->simple_select("gomobile", "regex");
 
 	$switch = false;
 	while($test = $db->fetch_array($query))
@@ -361,7 +357,7 @@ function gomobile_forcetheme()
 		if(preg_match($test['regex'], $_SERVER['HTTP_USER_AGENT']) != 0)
 		{
 			$switch = true;
-			$mybb->user['style'] = $test['tid'];
+			$mybb->user['style'] = $mybb->settings['gomobile_theme_id'];
 		}
 	}
 
@@ -498,7 +494,7 @@ function gomobile_adminLink(&$sub)
 
 	$sub[$key] = array(
 		'id' => 'gomobile',
-		'title' => $lang->gomobile,
+		'title' => $lang->gomobile_sidemenu,
 		'link' => 'index.php?module=config/gomobile'
 	);
 }
@@ -531,7 +527,6 @@ function gomobile_admin()
 		{
 			// User wants to save. Grab the values for later
 			$gomobile['regex'] = $mybb->input['regex'];
-			$gomobile['tid'] = intval($mybb->input['tid']);
 
 			// Did they forget to fill in the regex?
 			if($gomobile['regex'] == '')
@@ -568,19 +563,6 @@ function gomobile_admin()
 			admin_redirect('index.php?module=config/gomobile');
 		}
 
-		// Build the theme list
-		$default_theme = '';
-		$query = $db->simple_select("themes", "name, tid, def");
-		while($theme = $db->fetch_array($query))
-		{
-			$themes[] = $theme;
-
-			if($theme['def'] == '1')
-			{
-				$default_theme = $theme['tid'];
-			}
-		}
-
 		// If there was a problem saving earlier,
 		// we've already got this stuff, and the
 		// user just needs to fix it
@@ -590,14 +572,13 @@ function gomobile_admin()
 			if($gmtid != -1)
 			{
 				// The user is editing an existing regex, so load it
-				$query = $db->simple_select("gomobile", "regex, tid", "gmtid='{$gmtid}'");
+				$query = $db->simple_select("gomobile", "regex", "gmtid='{$gmtid}'");
 				$gomobile = $db->fetch_array($query);
 			}
 			else
 			{
 				// The user is creating a new one, so fill it with some defaults
 				$gomobile['regex'] = "";
-				$gomobile['tid'] = $default_theme;
 			}
 		}
 
@@ -623,20 +604,6 @@ function gomobile_admin()
 			// Long and ugly.
 			// basically ends up as title, description, form thing(name, value, extras)
 			$form_container->output_row($lang->gomobile_regex, $lang->gomobile_regex_desc, $form->generate_text_box('regex', htmlspecialchars($gomobile['regex']), array('id' => 'regex')));
-
-			// Build the theme select list
-			$theme_list = array();
-			foreach($themes as $theme)
-			{
-				if($theme['tid'] != 1)
-				{
-					$theme_list[$theme['tid']] = $theme['name'];
-				}
-			}
-
-			// We've still got the default theme id from earlier
-			// form thing(name, list, default's key, extras)
-			$form_container->output_row($lang->gomobile_theme, $lang->gomobile_theme_desc, $form->generate_select_box('tid', $theme_list, $gomobile['tid'], array('id' => 'tid')));
 
 			// Done with the box!
 			$form_container->end();
@@ -665,47 +632,10 @@ function gomobile_admin()
 			admin_redirect('index.php?module=config/gomobile');
 		}
 	}
-	elseif($mybb->input['action'] == 'tool_update_tid') {
-		if ($mybb->request_method == "post") {
-			if($mybb->settings['gomobile_theme_id'] != "-2" && $mybb->settings['gomobile_theme_id'] != "0") {
-				$update_array = array(
-					'tid' => $mybb->settings['gomobile_theme_id']
-				);
-				$db->update_query("gomobile", $update_array); 
-			}
-			else {
-				flash_message("The GoMobile Theme ID setting is not configured properly. Please adjust that setting and run the tool again.", 'error');
-				admin_redirect("index.php?module=config/gomobile");
-			}
-		
-			flash_message("The TIDs have been updated.", 'success');
-			admin_redirect("index.php?module=config/gomobile");
-		}
-		else {
-			admin_redirect("index.php?module=config/gomobile");
-		}
-	}
 	else
 	{
 		// This is the main menu
 		$page->output_header($lang->gomobile);
-		
-		// Tool List
-		$form = new Form("index.php?module=config/gomobile&amp;action=tool_update_tid", "post");
-	
-		// Set up the headers
-		$form_container = new FormContainer($lang->gomobile_tools);
-		$form_container->output_row_header($lang->gomobile_tool);
-		$form_container->output_row_header($lang->gomobile_run_tool, array('class' => 'align_center', 'width' => 155));
-	
-		// Tool: update tids
-		$form_container->output_cell("<label>{$lang->gomobile_update_tid}</label><div class=\"description\">{$lang->gomobile_update_tid_desc}</div>");
-		$form_container->output_cell($form->generate_submit_button($lang->gomobile_run_tool, array("name" => "submit")), array('class' => 'align_center', 'width' => 155));
-		$form_container->construct_row();
-	
-		// End of the tools
-		$form_container->end();
-		$form->end();
 
 		// Make a box for the menu
 		$table = new Table;
