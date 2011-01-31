@@ -1,6 +1,6 @@
 <?php
 /*
-	MyBB GoMobile - Version: 1.0 Beta 3
+	MyBB GoMobile - Version: 1.0 Beta 4
 	Based on UA Theme. Notices below.
 	
 	Copyright (c) 2010, Fawkes Software
@@ -210,45 +210,45 @@ function gomobile_install()
 
 	$settings = array(
 		"gomobile_mobile_name" => array(
-			"title"			=> "Mobile Board Name",
+			"title"			=> $lang->gomobile_settings_mobile_name_title,
 			"description"	=> $lang->gomobile_settings_mobile_name,
 			"optionscode"	=> "text",
-			"value"			=> $mybb->settings['bbname'],
+			"value"			=> $db->escape_string($mybb->settings['bbname']),
 			"disporder"		=> "1"
 		),
 		"gomobile_redirect_enabled" => array(
-			"title"			=> "Enable Redirect?",
+			"title"			=> $lang->gomobile_settings_redirect_enabled_title,
 			"description"	=> $lang->gomobile_settings_redirect_enabled,
 			"optionscode"	=> "yesno",
 			"value"			=> "0",
 			"disporder"		=> "2",
 		),
 		"gomobile_redirect_location" => array(
-			"title"			=> "Redirect where?",
+			"title"			=> $lang->gomobile_settings_redirect_location_title,
 			"description"	=> $lang->gomobile_settings_redirect_location,
 			"optionscode"	=> "text",
 			"value"			=> "index.php",
 			"disporder"		=> "3"
 		),
 		"gomobile_theme_id" => array(
-			"title"			=> "Theme ID",
+			"title"			=> $lang->gomobile_settings_theme_id_title,
 			"description"	=> $lang->gomobile_settings_theme_id,
 			"optionscode"	=> "text",
 			"value"			=> $theme,
 			"disporder"		=> "4"
 		),
 		"gomobile_homename" => array(
-			"title"			=> "Home Name",
+			"title"			=> $lang->gomobile_settings_homename_title,
 			"description"	=> $lang->gomobile_settings_homename,
 			"optionscode"	=> "text",
-			"value"			=> $mybb->settings['homename'],
+			"value"			=> $db->escape_string($mybb->settings['homename']),
 			"disporder"		=> "5"
 		),
 		"gomobile_homelink" => array(
-			"title"			=> "Home Link",
+			"title"			=> $lang->gomobile_settings_homelink_title,
 			"description"	=> $lang->gomobile_settings_homelink,
 			"optionscode"	=> "text",
-			"value"			=> $mybb->settings['homeurl'],
+			"value"			=> $db->escape_string($mybb->settings['homeurl']),
 			"disporder"		=> "6"
 		)
 	);
@@ -271,7 +271,7 @@ function gomobile_is_installed()
 
     if($db->table_exists("gomobile"))
     {
-        // The gomobile database table exists, so it must be installed.
+        // The gomobile database table exists, so it must be installed
         return true;
     }
 }
@@ -399,16 +399,19 @@ function gomobile_forumdisplay()
 
 function gomobile_showthread()
 {
-	global $mybb, $lang, $postcount, $perpage, $thread, $pagejump;
+	global $mybb, $lang, $postcount, $perpage, $thread, $pagejump, $pages, $page_location;
 	
-	// The jumper code
-	$pj_template = "<div class=\"float_left\" style=\"padding-top: 12px;\">
-        <a href=\"".get_thread_link($thread['tid'], 1)."\" class=\"pagination_a\">{$lang->gomobile_jump_fpost}</a>
-        <a href=\"".get_thread_link($thread['tid'], 0, 'lastpost')."\" class=\"pagination_a\">{$lang->gomobile_jump_lpost}</a>
-    </div>"; 
+	// Display the total number of pages
+	if($pages > 0) {
+		$page_location = " {$lang->gomobile_of} {$pages}";
+	}
 	
-	// Figure out if we're going to display the first/last page jump
+	// If there's more than one page, display links to the first & last posts
 	if($postcount > $perpage){
+		$pj_template = "<div class=\"float_left\" style=\"padding-top: 12px;\">
+			<a href=\"".get_thread_link($thread['tid'])."\" class=\"pagination_a\">{$lang->gomobile_jump_fpost}</a>
+			<a href=\"".get_thread_link($thread['tid'], 0, 'lastpost')."\" class=\"pagination_a\">{$lang->gomobile_jump_lpost}</a>
+			</div>";
 		$pagejump = $pj_template;
 	}
 }
@@ -417,7 +420,7 @@ function gomobile_portal_default()
 {
 	global $mybb, $lang;
 	
-	// Has the admin disabled viewing of the portal from GoMobile?
+	// Has the admin disabled viewing of the portal from GoMobile? Only runs when the user is on portal.php
 	if($mybb->user['style'] == $mybb->settings['gomobile_theme_id'] && $mybb->settings['gomobile_redirect_enabled'] == 1)
 	{
 		redirect($mybb->settings['gomobile_redirect_location'], $lang->gomobile_redirect_portal);
@@ -440,20 +443,17 @@ function gomobile_posts($p)
     global $mybb;
 
     $is_mobile = intval($mybb->input['mobile']);
-
+	
 	// Was the post sent from GoMobile?
-	if($is_mobile != 1)
-	{
+	if($is_mobile != 1) {
 		$is_mobile = 0;
 	}
-	else
-	{
+	else {
 		$is_mobile = 1;
 	}
 
 	// If so, we're going to store it for future use
     $p->post_insert_data['mobile'] = $is_mobile;
-
     return $p;
 } 
 
@@ -463,18 +463,15 @@ function gomobile_threads($p)
     global $mybb;
 
     $is_mobile = intval($mybb->input['mobile']);
-
-	if($is_mobile != 1)
-	{
+	
+	if($is_mobile != 1) {
 		$is_mobile = 0;
 	}
-	else
-	{
+	else {
 		$is_mobile = 1;
 	}
 
     $p->post_insert_data['mobile'] = $is_mobile;
-
     return $p;
 } 
 
