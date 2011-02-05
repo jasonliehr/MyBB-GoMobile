@@ -1,0 +1,3 @@
+The GoMobile Graphics Development Kit, or GDK, is not a conventional set of instructions and templates to create new graphics for the item they are provided with. Rather, we have included a set of PNG images which do not have a background and are ideal for applying color transformations, rather than working with GIFs (due to the matte around the images that GIF inheretly adds).
+
+There are only a few images included in this folder. It is recommended that any images be saved in GIF format - simply for the much, much smaller filesize and virtually identical quality (when not on a multicolored background). Other images, such as those seen in the User Control Panel, are full PNG images to work with the background they're on.
