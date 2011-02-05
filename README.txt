@@ -1,7 +1,7 @@
-MYBB GOMOBILE BETA 3
+MYBB GOMOBILE BETA 4
 --------------------
 - This product is licensed under the GNU/GPL v3 license, meaning you are free to do anything within the scope of the license. Within this package, you should find a copy of the license titled 'License.txt'.
-- This product was designed for MyBB 1.6, and has not been thoroughly tested on 1.4. It is recommended you do no install this on a MyBB 1.4.x installation.
+- This product was designed for MyBB 1.6, and has not been thoroughly tested on 1.4. It is recommended you do not install this on a MyBB 1.4.x installation.
 
 
 INSTALLATION
