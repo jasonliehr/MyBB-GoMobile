@@ -15,31 +15,26 @@
 	margin: 0;
 }
 
-ul.thread_tools li.subscription_add a {
-	background: #84db7d url(images/mobile/subscribe.png) no-repeat 7px 7px;
-	border: 1px solid #54ac4d;
-	padding: 7px 7px 7px 30px;
-	color: #145d0e;
+ul.thread_tools li a {
+	padding: 7px;
+	display: block;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
+}
+
+ul.thread_tools li.subscription_add a {
+	background: #84db7d;
+	color: #145d0e;
+	border: 1px solid #54ac4d;
 }
 
 ul.thread_tools li.subscription_remove a {
-	background: #db7d7d url(images/mobile/unsubscribe.png) no-repeat 7px 7px;
+	background: #db7d7d;
 	border: 1px solid #ac4d4d;
-	padding: 7px 7px 7px 30px;
 	color: #5d0e0e;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
 }
 
-		
-		
-		
-		
-		
-		
-		]]>
+]]>
 		</stylesheet>
 		<stylesheet name="usercp.css" attachedto="usercp.php|usercp2.php|private.php" version="1602"><![CDATA[div.usercp_nav_item {
 	background: transparent url(images/mobile/cpanels/nav_item_bg.png) top left repeat;
@@ -1818,7 +1813,7 @@ td.forum_on {
 </script>
 </body>
 </html>]]></template>
-		<template name="postbit_posturl" version="1601"><![CDATA[<div style="float: right; width: auto; vertical-align: top"><img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.png" alt="" width="{$post['mobile']}6" height="{$post['mobile']}2" title="Arrow indicates this post was sent from GoMobile" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <span class="smalltext"><strong>{$lang->postbit_post} <a href="{$post['postlink']}#pid{$post['pid']}">#{$postcounter}</a></strong>{$post['inlinecheck']}</span></div>]]></template>
+		<template name="postbit_posturl" version="1601"><![CDATA[<div style="float: right; width: auto; vertical-align: top"><img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.png" alt="" width="{$post['mobile']}6" height="{$post['mobile']}2" title="Arrow indicates this post was sent from GoMobile" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> <span class="smalltext"><strong>{$lang->postbit_post} <a href="{$post['postlink']}#pid{$post['pid']}">#{$postcounter}</a></strong>{$post['inlinecheck']}</span></div>]]></template>
 		<template name="modcp_announcements_global" version="1601"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 					<tr>
 						<td class="thead" colspan="3"><div class="float_right"><a href="modcp.php?action=new_announcement&amp;fid=-1">{$lang->add_global_announcement}</a></div><strong>{$lang->global_announcements}</strong></td>
@@ -3086,8 +3081,7 @@ td.forum_on {
 					{$auto_dst_detection}
 				<!-- End Do not removes. -->
 			</div>
-		</div>
-<debugstuff>]]></template>
+		</div>]]></template>
 		<template name="header" version="1601"><![CDATA[<a name="top" id="top"></a>
 	<div id="header">
 		<div id="panel">
