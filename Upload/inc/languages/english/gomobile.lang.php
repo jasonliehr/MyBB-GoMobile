@@ -63,6 +63,8 @@ $l['gomobile_settings_homelink'] = "Below is the link that appears in the footer
 
 // Misc. strings used through GoMobile
 $l['gomobile_mobile_version'] = "Mobile Version";
+$l['gomobile_redirect_notice'] = "Redirect Notice";
+$l['gomobile_posted_from'] = "Posted from GoMobile";
 $l['gomobile_ucp'] = "UCP";
 $l['gomobile_mcp'] = "MCP";
 $l['gomobile_acp'] = "ACP";
