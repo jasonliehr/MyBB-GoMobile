@@ -196,7 +196,7 @@ function gomobile_install()
 	// Edit existing templates (shows when posts are from GoMobile)
 	require_once MYBB_ROOT."inc/adminfunctions_templates.php";
 
-	find_replace_templatesets("postbit_posturl", '#'.preg_quote('<span').'#', '<img src="{\$mybb->settings[\'bburl\']}/images/mobile/posted_{\$post[\'mobile\']}.gif" alt="" width="{\$post[\'mobile\']}8" height="{\$post[\'mobile\']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> '.'<span');
+	find_replace_templatesets("postbit_posturl", '#'.preg_quote('<span').'#', '<img src="{\$mybb->settings[\'bburl\']}/images/mobile/posted_{\$post[\'mobile\']}.gif" alt="" width="{\$post[\'mobile\']}8" height="{\$post[\'mobile\']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> '.'<span');
 
 	// Get our settings ready
 	$setting_group = array
@@ -290,7 +290,7 @@ function gomobile_uninstall()
 	// Can the template edits we made earlier
 	require_once MYBB_ROOT."inc/adminfunctions_templates.php";
 
-	find_replace_templatesets("postbit_posturl", '#'.preg_quote('<img src="{\$mybb->settings[\'bburl\']}/images/mobile/posted_{\$post[\'mobile\']}.gif" alt="" width="{\$post[\'mobile\']}8" height="{\$post[\'mobile\']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> '.'').'#', '', 0);
+	find_replace_templatesets("postbit_posturl", '#'.preg_quote('<img src="{\$mybb->settings[\'bburl\']}/images/mobile/posted_{\$post[\'mobile\']}.gif" alt="" width="{\$post[\'mobile\']}8" height="{\$post[\'mobile\']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> '.'').'#', '', 0);
 
 	// Remove the GoMobile cache
 	$db->query("DELETE FROM ".TABLE_PREFIX."datacache WHERE title='gomobile'");
