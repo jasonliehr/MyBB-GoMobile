@@ -181,22 +181,11 @@ function gomobile_install()
 
 		$db->insert_query("gomobile", $gomobile);
 	}
-	
-	// Insert the string list into the cache
-	$list = $db->query("SELECT gmtid,string FROM " .TABLE_PREFIX. "gomobile");
-	$stringlist = array();
-	
-	while($string = $db->fetch_array($list))
-	{
-		$stringlist[] = $db->escape_string($string['string']);
-	}
-	
-	$db->insert_query("datacache", array("title" => "gomobile", "cache" => serialize($stringlist)));
 
 	// Edit existing templates (shows when posts are from GoMobile)
 	require_once MYBB_ROOT."inc/adminfunctions_templates.php";
 
-	find_replace_templatesets("postbit_posturl", '#'.preg_quote('<span').'#', '<img src="{\$mybb->settings[\'bburl\']}/images/mobile/posted_{\$post[\'mobile\']}.gif" alt="" width="{\$post[\'mobile\']}8" height="{\$post[\'mobile\']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> '.'<span');
+	find_replace_templatesets("postbit_posturl", '#'.preg_quote('<span').'#', '<img src="{$mybb->settings[\'bburl\']}/images/mobile/posted_{$post[\'mobile\']}.gif" alt="" width="{$post[\'mobile\']}8" height="{$post[\'mobile\']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> '.'<span');
 
 	// Get our settings ready
 	$setting_group = array
@@ -258,16 +247,20 @@ function gomobile_install()
 
 		$db->insert_query("settings", $setting);
 	}
-
 	rebuild_settings();
+	
+	// Install the cache from the gomobile table
+	gomobile_update_cache("install");
 }
 
 function gomobile_is_installed()
 {
-    global $mybb;
+    global $mybb, $cache;
+	
+	// Is the cache [the last installation step performed] ready for use?
+	$cacheready = $cache->read('gomobile');
 
-	// Checks if GoMobile has made it through all necessary installation steps
-    if(isset($mybb->settings['gomobile_homelink']))
+    if($cacheready != 0)
     {
         return true;
     }
@@ -290,7 +283,7 @@ function gomobile_uninstall()
 	// Can the template edits we made earlier
 	require_once MYBB_ROOT."inc/adminfunctions_templates.php";
 
-	find_replace_templatesets("postbit_posturl", '#'.preg_quote('<img src="{\$mybb->settings[\'bburl\']}/images/mobile/posted_{\$post[\'mobile\']}.gif" alt="" width="{\$post[\'mobile\']}8" height="{\$post[\'mobile\']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> '.'').'#', '', 0);
+	find_replace_templatesets("postbit_posturl", '#'.preg_quote('<img src="{$mybb->settings[\'bburl\']}/images/mobile/posted_{$post[\'mobile\']}.gif" alt="" width="{$post[\'mobile\']}8" height="{$post[\'mobile\']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> '.'').'#', '', 0);
 
 	// Remove the GoMobile cache
 	$db->query("DELETE FROM ".TABLE_PREFIX."datacache WHERE title='gomobile'");
@@ -449,10 +442,10 @@ function gomobile_threads($p)
     return $p;
 }
 
-function gomobile_update_cache() {
+function gomobile_update_cache($watdo) {
 	global $db;
 
-	// Update the GoMobile cache
+	// Update or install the GoMobile cache
 	$list = $db->query("SELECT gmtid,string FROM " .TABLE_PREFIX. "gomobile");
 	$stringlist = array();
 	
@@ -461,7 +454,14 @@ function gomobile_update_cache() {
 		$stringlist[] = $db->escape_string($uastring['string']);
 	}
 	
-	$db->query("UPDATE " .TABLE_PREFIX. "datacache set cache='" .serialize($stringlist). "' WHERE title='gomobile'");
+	// If we're installing, insert the row
+	if($watdo == "install") {
+		$db->insert_query("datacache", array("title" => "gomobile", "cache" => serialize($stringlist)));
+	}
+	// If we're updating, just update the cache
+	else {
+		$db->query("UPDATE " .TABLE_PREFIX. "datacache set cache='" .serialize($stringlist). "' WHERE title='gomobile'");
+	}
 }
 
 function gomobile_adminAction(&$action)
