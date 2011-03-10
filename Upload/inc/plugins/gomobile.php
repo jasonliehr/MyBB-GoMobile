@@ -264,7 +264,7 @@ function gomobile_install()
 
 function gomobile_is_installed()
 {
-    global mybb;
+    global $mybb;
 
 	// Checks if GoMobile has made it through all necessary installation steps
     if(isset($mybb->settings['gomobile_homelink']))
