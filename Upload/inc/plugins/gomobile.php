@@ -60,7 +60,7 @@ if(defined("IN_ADMINCP"))
 	$plugins->add_hook('admin_load','gomobile_admin');
 }
 
-// Load up the languages
+// Load our custom language file
 global $lang;
 $lang->load("gomobile");
 
@@ -90,20 +90,20 @@ function gomobile_install()
 		case "pgsql":
 			$db->query("CREATE TABLE ".TABLE_PREFIX."gomobile (
 				gmtid serial,
-				regex varchar(120) NOT NULL default '',
+				string varchar(120) NOT NULL default '',
 				PRIMARY KEY (gmtid)
 			);");
 			break;
 		case "sqlite":
 			$db->query("CREATE TABLE ".TABLE_PREFIX."gomobile (
 				gmtid INTEGER PRIMARY KEY,
-				regex varchar(120) NOT NULL default '')
+				string varchar(120) NOT NULL default '')
 			);");
 			break;
 		default:
 			$db->query("CREATE TABLE ".TABLE_PREFIX."gomobile (
 				gmtid int(10) unsigned NOT NULL auto_increment,
-				regex varchar(120) NOT NULL default '',
+				string varchar(120) NOT NULL default '',
 				PRIMARY KEY(gmtid)
 			) TYPE=MyISAM;");
 	}
@@ -128,7 +128,7 @@ function gomobile_install()
 		$theme = MYBB_ROOT."inc/plugins/gomobile_theme.xml";
 		if(!file_exists($theme))
 		{
-			flash_message("Upload the GoMobile Theme to the plugin directory (./inc/plugins/) before continuing.", "error");
+			flash_message("Upload the GoMobile Theme XML to the plugin directory (./inc/plugins/) before continuing.", "error");
 			admin_redirect("index.php?module=config/plugins");
 		}
 
@@ -148,26 +148,27 @@ function gomobile_install()
 		}
 	}
 
-	// Get a list of default regexes ready for insertion
+	// Get a list of default UA strings ready for insertion
 	// You can also add more from your ACP
 	$data_array = array(
-		"/ip[ho](.+?)mobile(.+?)safari/i",
-		"/mobile/i",
-		"/Android(.+?)/i",
-		"/Opera Mini(.+?)/i",
-		"/BlackBerry(.+?)/i",
-		"/IEMobile(.+?)/i",
-		"/Windows Phone(.+?)/i",
-		"/HTC(.+?)/i",
-		"/Nokia(.+?)/i",
-		"/Netfront(.+?)/i",
-		"/SmartPhone(.+?)/i",
-		"/Symbian(.+?)/i",
-		"/SonyEricsson(.+?)/i",
-		"/AvantGo(.+?)/i",
-		"/DoCoMo(.+?)/i",
-		"/Pre\/(.+?)/i",
-		"/UP.Browser(.+?)/i"
+		"iPhone",
+		"iPod",
+		"mobile",
+		"Android",
+		"Opera Mini",
+		"BlackBerry",
+		"IEMobile",
+		"Windows Phone",
+		"HTC",
+		"Nokia",
+		"Netfront",
+		"SmartPhone",
+		"Symbian",
+		"SonyEricsson",
+		"AvantGo",
+		"DoCoMo",
+		"Pre/",
+		"UP.Browser"
 	);
 
 	// Insert the data listed above
@@ -175,11 +176,22 @@ function gomobile_install()
 	{
 		$gomobile = array(
 			"gmtid" => -1,
-			"regex" => $db->escape_string($data)
+			"string" => $db->escape_string($data)
 		);
 
 		$db->insert_query("gomobile", $gomobile);
 	}
+	
+	// Insert the string list into the cache
+	$list = $db->query("SELECT gmtid,string FROM " .TABLE_PREFIX. "gomobile");
+	$stringlist = array();
+	
+	while($string = $db->fetch_array($list))
+	{
+		$stringlist[] = $db->escape_string($string['string']);
+	}
+	
+	$db->insert_query("datacache", array("title" => "gomobile", "cache" => serialize($stringlist)));
 
 	// Edit existing templates (shows when posts are from GoMobile)
 	require_once MYBB_ROOT."inc/adminfunctions_templates.php";
@@ -198,6 +210,7 @@ function gomobile_install()
 	);
 
 	$gid = $db->insert_query("settinggroups", $setting_group);
+	$dispnum = 0;
 
 	$settings = array(
 		"gomobile_mobile_name" => array(
@@ -205,28 +218,35 @@ function gomobile_install()
 			"description"	=> $lang->gomobile_settings_mobile_name,
 			"optionscode"	=> "text",
 			"value"			=> $db->escape_string($mybb->settings['bbname']),
-			"disporder"		=> "1"
+			"disporder"		=> ++$dispnum
 		),
 		"gomobile_theme_id" => array(
 			"title"			=> $lang->gomobile_settings_theme_id_title,
 			"description"	=> $lang->gomobile_settings_theme_id,
 			"optionscode"	=> "text",
 			"value"			=> $theme,
-			"disporder"		=> "2"
+			"disporder"		=> ++$dispnum
+		),
+		"gomobile_permstoggle" => array(
+			"title"			=> $lang->gomobile_settings_permstoggle_title,
+			"description"	=> $lang->gomobile_settings_permstoggle,
+			"optionscode"	=> "yesno",
+			"value"			=> 0,
+			"disporder"		=> ++$dispnum
 		),
 		"gomobile_homename" => array(
 			"title"			=> $lang->gomobile_settings_homename_title,
 			"description"	=> $lang->gomobile_settings_homename,
 			"optionscode"	=> "text",
 			"value"			=> $db->escape_string($mybb->settings['homename']),
-			"disporder"		=> "3"
+			"disporder"		=> ++$dispnum
 		),
 		"gomobile_homelink" => array(
 			"title"			=> $lang->gomobile_settings_homelink_title,
 			"description"	=> $lang->gomobile_settings_homelink,
 			"optionscode"	=> "text",
 			"value"			=> $db->escape_string($mybb->settings['homeurl']),
-			"disporder"		=> "4"
+			"disporder"		=> ++$dispnum
 		)
 	);
 
@@ -244,14 +264,16 @@ function gomobile_install()
 
 function gomobile_is_installed()
 {
-    global $db;
+    global mybb;
 
-    if($db->table_exists("gomobile"))
+	// Checks if GoMobile has made it through all necessary installation steps
+    if(isset($mybb->settings['gomobile_homelink']))
     {
-        // The gomobile database table exists, so it must be installed
         return true;
     }
-}
+
+    return false;
+} 
 
 function gomobile_uninstall()
 {
@@ -268,19 +290,23 @@ function gomobile_uninstall()
 	// Can the template edits we made earlier
 	require_once MYBB_ROOT."inc/adminfunctions_templates.php";
 
-	find_replace_templatesets("postbit_posturl", '#'.preg_quote('<img src="{$mybb->settings[\'bburl\']}/images/mobile/posted_{$post[\'mobile\']}.png" alt="" width="{$post[\'mobile\']}8" height="{$post[\'mobile\']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> '.'').'#', '', 0);
+	find_replace_templatesets("postbit_posturl", '#'.preg_quote('<img src="{\$mybb->settings[\'bburl\']}/images/mobile/posted_{\$post[\'mobile\']}.gif" alt="" width="{\$post[\'mobile\']}8" height="{\$post[\'mobile\']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> '.'').'#', '', 0);
 
+	// Remove the GoMobile cache
+	$db->query("DELETE FROM ".TABLE_PREFIX."datacache WHERE title='gomobile'");
+	
 	// Lastly, remove the settings for GoMobile
 	$db->query("DELETE FROM ".TABLE_PREFIX."settinggroups WHERE name='gomobile'");
 	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='gomobile_header_text'");
 	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='gomobile_theme_id'");
+	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='gomobile_permstoggle'");
 	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='gomobile_homename'");
 	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='gomobile_homelink'");
 }
 
 function gomobile_forcetheme()
 {
-	global $db, $mybb, $plugins;
+	global $db, $mybb, $plugins, $cache;
 
 	if($mybb->session->is_spider == false)
 	{
@@ -303,36 +329,44 @@ function gomobile_forcetheme()
 		return false;
 	}
 	
-	// Fetch the theme permissions from the database
-	$tquery = $db->simple_select("themes", "*", "tid like '{$mybb->settings['gomobile_theme_id']}'");
-	$tperms = $db->fetch_field($tquery, "allowedgroups");
-	if($tperms != "all") {
-		$canuse = explode(",", $tperms);
-	}
+	// Is the admin using theme permission settings?
+	// If so, check them
+	if($mybb->settings['gomobile_permstoggle'] == 1) {
+		// Fetch the theme permissions from the database
+		$tquery = $db->simple_select("themes", "*", "tid like '{$mybb->settings['gomobile_theme_id']}'");
+		$tperms = $db->fetch_field($tquery, "allowedgroups");
+		if($tperms != "all") {
+			$canuse = explode(",", $tperms);
+		}
 	
-	// Also explode our user's additional groups
-	if($mybb->user['additionalgroups']) {
-		$userag = explode(",", $mybb->user['additionalgroups']);
-	}
+		// Also explode our user's additional groups
+		if($mybb->user['additionalgroups']) {
+			$userag = explode(",", $mybb->user['additionalgroups']);
+		}
 	
-	// If the user doesn't have permission to use the theme...
-	if($tperms != "all") {
-		if(!in_array($mybb->user['usergroup'], $canuse) && !in_array($userag, $canuse)) {
-			return false;
+		// If the user doesn't have permission to use the theme...
+		if($tperms != "all") {
+			if(!in_array($mybb->user['usergroup'], $canuse) && !in_array($userag, $canuse)) {
+				return false;
+			}
 		}
 	}
 
-	// Fetch the list of User Agent strings
-	$query = $db->simple_select("gomobile", "regex");
+	// Load the list of stringes from the cache
+	$list = $cache->read('gomobile');
 
 	$switch = false;
-	while($test = $db->fetch_array($query))
+	foreach($list as $uastring)
 	{
-		// Switch to GoMobile if the UA matches our list
-		if(preg_match($test['regex'], $_SERVER['HTTP_USER_AGENT']) != 0)
+		// Run as long as there hasn't been a match yet
+		if(!$switch)
 		{
-			$switch = true;
-			$mybb->user['style'] = $mybb->settings['gomobile_theme_id'];
+			// Switch to GoMobile if the UA matches our list
+			if(stristr($_SERVER['HTTP_USER_AGENT'], $uastring) == TRUE)
+			{
+				$switch = true;
+				$mybb->user['style'] = $mybb->settings['gomobile_theme_id'];
+			}
 		}
 	}
 
@@ -413,7 +447,22 @@ function gomobile_threads($p)
 
     $p->post_insert_data['mobile'] = $is_mobile;
     return $p;
-} 
+}
+
+function gomobile_update_cache() {
+	global $db;
+
+	// Update the GoMobile cache
+	$list = $db->query("SELECT gmtid,string FROM " .TABLE_PREFIX. "gomobile");
+	$stringlist = array();
+	
+	while($uastring = $db->fetch_array($list))
+	{
+		$stringlist[] = $db->escape_string($uastring['string']);
+	}
+	
+	$db->query("UPDATE " .TABLE_PREFIX. "datacache set cache='" .serialize($stringlist). "' WHERE title='gomobile'");
+}
 
 function gomobile_adminAction(&$action)
 {
@@ -449,7 +498,7 @@ function gomobile_admin()
 
 	if($mybb->input['action'] == 'edit')
 	{
-		// Adding or creating a regex...
+		// Adding or creating a string...
 		if(!isset($mybb->input['gmtid']) || intval($mybb->input['gmtid']) == 0)
 		{
 			flash_message($lang->gomobile_noexist, 'error');
@@ -463,29 +512,35 @@ function gomobile_admin()
 		if($mybb->input['save'])
 		{
 			// User wants to save. Grab the values for later
-			$gomobile['regex'] = $mybb->input['regex'];
+			$gomobile['string'] = $mybb->input['string'];
 
-			// Did they forget to fill in the regex?
-			if($gomobile['regex'] == '')
+			// Did they forget to fill in the string?
+			if($gomobile['string'] == '')
 			{
-				$error = $lang->gomobile_noregex;
+				$error = $lang->gomobile_nostring;
 			}
 			else
 			{
 				// No? Let's save it then
-				$gomobile['regex'] = $db->escape_string($gomobile['regex']);
+				$gomobile['string'] = $db->escape_string($gomobile['string']);
 
 				// Did they create a new one?
 				if($gmtid == -1)
 				{
 					// Yes, so we need to add a new database row
 					$db->insert_query("gomobile", $gomobile);
+					
+					// Update the cache
+					gomobile_update_cache();
 				}
 				else
 				{
 					// No, so we just update the existing one.
 					// To do: check to make sure the gmtid exists
 					$db->update_query("gomobile", $gomobile, "gmtid='{$gmtid}'");
+					
+					// Update the cache
+					gomobile_update_cache();
 				}
 
 				flash_message($lang->gomobile_saved, 'success');
@@ -494,8 +549,11 @@ function gomobile_admin()
 		}
 		else if($mybb->input['delete'])
 		{
-			// Delete the regex and return to the main menu
+			// Delete the string and return to the main menu
 			$db->delete_query("gomobile", "gmtid='{$gmtid}'");
+			
+			// Update the cache
+			gomobile_update_cache();
 
 			admin_redirect('index.php?module=config/gomobile');
 		}
@@ -508,19 +566,19 @@ function gomobile_admin()
 			// If it doesn't exist yet, let's fill it out
 			if($gmtid != -1)
 			{
-				// The user is editing an existing regex, so load it
-				$query = $db->simple_select("gomobile", "regex", "gmtid='{$gmtid}'");
+				// The user is editing an existing string, so load it
+				$query = $db->simple_select("gomobile", "string", "gmtid='{$gmtid}'");
 				$gomobile = $db->fetch_array($query);
 			}
 			else
 			{
 				// The user is creating a new one, so fill it with some defaults
-				$gomobile['regex'] = "";
+				$gomobile['string'] = "";
 			}
 		}
 
 		// If at this point $gomobile == null,
-		// we tried to load a non-existant regex.
+		// we tried to load a non-existant string.
 		if($gomobile != null)
 		{
 			// At this point, though, it does exist so
@@ -540,7 +598,7 @@ function gomobile_admin()
 
 			// Long and ugly.
 			// basically ends up as title, description, form thing(name, value, extras)
-			$form_container->output_row($lang->gomobile_regex, $lang->gomobile_regex_desc, $form->generate_text_box('regex', htmlspecialchars($gomobile['regex']), array('id' => 'regex')));
+			$form_container->output_row($lang->gomobile_string, $lang->gomobile_string_desc, $form->generate_text_box('string', htmlspecialchars($gomobile['string']), array('id' => 'string')));
 
 			// Done with the box!
 			$form_container->end();
@@ -564,7 +622,7 @@ function gomobile_admin()
 		}
 		else
 		{
-			// This happens if the user tried to edit a non-existant regex
+			// This happens if the user tried to edit a non-existant string
 			flash_message($lang->gomobile_noexist, 'error');
 			admin_redirect('index.php?module=config/gomobile');
 		}
@@ -576,16 +634,16 @@ function gomobile_admin()
 
 		// Make a box for the menu
 		$table = new Table;
-		$table->construct_header($lang->gomobile_regex);
+		$table->construct_header($lang->gomobile_string);
 		$table->construct_header($lang->controls, array("class" => "align_center", "width" => 155));
 
-		// list existing regexes
-		$query = $db->simple_select("gomobile", "gmtid, regex");
+		// list existing stringes
+		$query = $db->simple_select("gomobile", "gmtid, string");
 		while($list = $db->fetch_array($query))
 		{
-			// show the regex
-			$list['regex'] = htmlspecialchars($list['regex']);
-			$table->construct_cell("<strong>{$list['regex']}</strong>");
+			// show the string
+			$list['string'] = htmlspecialchars($list['string']);
+			$table->construct_cell("<strong>{$list['string']}</strong>");
 
 			// Show the edit and delete menu
 			$popup = new PopupMenu("gomobile_{$list['gmtid']}", $lang->options);
@@ -597,7 +655,7 @@ function gomobile_admin()
 			$table->construct_row();
 		}
 
-		// list 'add new regex' link
+		// list 'add new string' link
 		$table->construct_cell("<strong><a href=\"index.php?module=config/gomobile&amp;action=edit&amp;gmtid=-1\">{$lang->gomobile_addnew}</a></strong>");
 		$table->construct_cell('');
 		$table->construct_row();
