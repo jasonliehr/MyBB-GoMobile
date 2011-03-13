@@ -82,7 +82,7 @@ function gomobile_info()
 
 function gomobile_install()
 {
-	global $db, $mybb, $lang;
+	global $db, $mybb, $lang, $cache;
 
 	// Install the right database table for our database type
 	switch($mybb->config['database']['type'])
@@ -105,7 +105,7 @@ function gomobile_install()
 				gmtid int(10) unsigned NOT NULL auto_increment,
 				string varchar(120) NOT NULL default '',
 				PRIMARY KEY(gmtid)
-			) TYPE=MyISAM;");
+			) ENGINE=MyISAM;");
 	}
 
 	// Add a column to the posts & threads tables for tracking mobile posts
@@ -250,7 +250,7 @@ function gomobile_install()
 	rebuild_settings();
 	
 	// Install the cache from the gomobile table
-	gomobile_update_cache("install");
+	gomobile_update_cache();
 }
 
 function gomobile_is_installed()
@@ -270,7 +270,7 @@ function gomobile_is_installed()
 
 function gomobile_uninstall()
 {
-	global $db;
+	global $db, $cache;
 
 	// Drop the GoMobile table
 	$db->drop_table("gomobile");
@@ -283,10 +283,11 @@ function gomobile_uninstall()
 	// Can the template edits we made earlier
 	require_once MYBB_ROOT."inc/adminfunctions_templates.php";
 
+	// Undo the template edits
 	find_replace_templatesets("postbit_posturl", '#'.preg_quote('<img src="{$mybb->settings[\'bburl\']}/images/mobile/posted_{$post[\'mobile\']}.gif" alt="" width="{$post[\'mobile\']}8" height="{$post[\'mobile\']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> '.'').'#', '', 0);
 
 	// Remove the GoMobile cache
-	$db->query("DELETE FROM ".TABLE_PREFIX."datacache WHERE title='gomobile'");
+	$db->delete_query("datacache", "title='gomobile'");
 	
 	// Lastly, remove the settings for GoMobile
 	$db->query("DELETE FROM ".TABLE_PREFIX."settinggroups WHERE name='gomobile'");
@@ -442,8 +443,8 @@ function gomobile_threads($p)
     return $p;
 }
 
-function gomobile_update_cache($watdo) {
-	global $db;
+function gomobile_update_cache() {
+	global $db, $cache;
 
 	// Update or install the GoMobile cache
 	$list = $db->query("SELECT gmtid,string FROM " .TABLE_PREFIX. "gomobile");
@@ -454,14 +455,7 @@ function gomobile_update_cache($watdo) {
 		$stringlist[] = $db->escape_string($uastring['string']);
 	}
 	
-	// If we're installing, insert the row
-	if($watdo == "install") {
-		$db->insert_query("datacache", array("title" => "gomobile", "cache" => serialize($stringlist)));
-	}
-	// If we're updating, just update the cache
-	else {
-		$db->query("UPDATE " .TABLE_PREFIX. "datacache set cache='" .serialize($stringlist). "' WHERE title='gomobile'");
-	}
+	$cache->update("gomobile", $stringlist);
 }
 
 function gomobile_adminAction(&$action)
