@@ -3081,7 +3081,8 @@ td.forum_on {
 					{$auto_dst_detection}
 				<!-- End Do not removes. -->
 			</div>
-		</div>]]></template>
+		</div>
+<debugstuff>]]></template>
 		<template name="header" version="1601"><![CDATA[<a name="top" id="top"></a>
 	<div id="header">
 		<div id="panel">
@@ -3493,11 +3494,10 @@ td.forum_on {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="headerinclude" version="1601"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
+		<template name="headerinclude" version="1602"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
-<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no"> 
 {$stylesheets}
 <script type="text/javascript">
 <!--
@@ -4225,5 +4225,8 @@ td.forum_on {
 // -->
 </script>
 </div>]]></template>
+		<template name="htmldoctype" version="1602"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">]]></template>
 	</templates>
 </theme>
