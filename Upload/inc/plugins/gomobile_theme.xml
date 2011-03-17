@@ -2666,7 +2666,7 @@ td.forum_on {
 </body>
 </html>]]></template>
 		<template name="forumbit_depth3_statusicon" version="1601"><![CDATA[<img src="{$theme['imgdir']}/{$lightbulb['folder']}.gif" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="middle" width="12" height="12" />]]></template>
-		<template name="newthread" version="1601"><![CDATA[<html>
+		<template name="newthread" version="1602"><![CDATA[<html>
 <head>
 <title>{$lang->newthread_in}</title>
 {$headerinclude}
@@ -2698,6 +2698,7 @@ td.forum_on {
 	{$modoptions}
 	{$subscriptionmethod}
 	{$captcha}
+	{$attachbox}
 	<tr><td class="tfoot" align="center"><input type="submit" class="button" name="submit" value="{$lang->post_thread}" tabindex="4" accesskey="s" />  <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="5" /></td></tr>
 </table>
 <input type="hidden" name="action" value="do_newthread" />
@@ -3400,7 +3401,7 @@ td.forum_on {
 </script>]]></template>
 		<template name="showthread_newthread" version="1413"><![CDATA[]]></template>
 		<template name="forumbit_subforums" version="1601"><![CDATA[{$sub_forums}]]></template>
-		<template name="newreply" version="1601"><![CDATA[<html>
+		<template name="newreply" version="1602"><![CDATA[<html>
 <head>
 <title>{$lang->post_reply_to}</title>
 {$headerinclude}
@@ -3433,6 +3434,7 @@ td.forum_on {
 	{$modoptions}
 	{$subscriptionmethod}
 	{$captcha}
+	{$attachbox}
 	<tr><td class="tfoot" align="center"><input type="submit" class="button" name="submit" value="{$lang->post_reply}" tabindex="3" accesskey="s" />  <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="4" /></td></tr>
 </table>
 <input type="hidden" name="action" value="do_newreply" />
@@ -3514,6 +3516,11 @@ td.forum_on {
 // -->
 </script>
 {$newpmmsg}]]></template>
+		<template name="post_attachments_new" version="1602"><![CDATA[<tr><td class="tcat"><strong>{$lang->new_attachment}</strong></td></tr>
+<tr><td class="trow2">
+	<div style="padding-bottom: 10px;"><input type="file" name="attachment" size="30" class="fileupload" /></div>
+	<input type="submit" class="button" name="updateattachment" value="{$lang->update_attachment}" tabindex="12" /> <input type="submit" class="button" name="newattachment" value="{$lang->add_attachment}"  tabindex="13" />
+</td></tr>]]></template>
 		<template name="member_register" version="1413"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->registration}</title>
@@ -4228,5 +4235,11 @@ td.forum_on {
 		<template name="htmldoctype" version="1602"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">]]></template>
+		<template name="post_attachments" version="1602"><![CDATA[{$newattach}
+{$attachments}]]></template>
+		<template name="post_attachments_attachment" version="1602"><![CDATA[<tr><td class="trow2">
+{$attachment['filename']} ({$attachment['size']})
+{$attach_mod_options} <input type="submit" class="button" name="rem" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" />
+</td></tr>]]></template>
 	</templates>
 </theme>
