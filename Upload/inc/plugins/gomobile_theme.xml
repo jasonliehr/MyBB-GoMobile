@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="GoMobile 1.0 Beta 4" version="1602">
+<theme name="MyBB GoMobile" version="1602">
 	<properties>
 		<templateset><![CDATA[16]]></templateset>
 		<editortheme><![CDATA[default]]></editortheme>
