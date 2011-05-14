@@ -1,32 +1,7 @@
 <?php
 /*
-	MyBB GoMobile - Version: 1.0 Beta 4
-	Based on UA Theme. Notices below.
-	
-	Copyright (c) 2010, Fawkes Software
-	All rights reserved.
-
-	Redistribution and use in source and binary forms, with or without modification,
-	are permitted provided that the following conditions are met:
-
-	* Redistributions of source code must retain the above copyright notice, this
-	list of conditions and the following disclaimer.
-	* Redistributions in binary form must reproduce the above copyright notice,
-	this list of conditions and the following disclaimer in the documentation
-	and/or other materials provided with the distribution.
-	* Neither the name of Fawkes Software nor the names of its contributors may be
-	used to endorse or promote products derived from this software without specific
-	prior written permission.
-
-	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
-	EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-	OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
-	SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-	INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
-	TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-	BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-	ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+* MyBB GoMobile - Version 1.0 Gold
+* Licensed under GNU/GPL v3
 */
 
 // Disallow direct access to this file for security reasons
@@ -35,35 +10,34 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-// Page hook, for overriding the theme as best as we can
+// Theme overriding
 $plugins->add_hook("global_start", "gomobile_forcetheme");
 
-// New Reply & New Thread hooks, for determining whether or not the post is from a mobile
+// Used to insert data into the posts/threads table for posts made via GoMobile
 $plugins->add_hook("datahandler_post_insert_post", "gomobile_posts");
 $plugins->add_hook("datahandler_post_insert_thread_post", "gomobile_threads");
 
-// Showthread hooks
+// Page numbers
 $plugins->add_hook("showthread_end", "gomobile_showthread");
 
-// User CP Options
+// UCP options
 $plugins->add_hook("usercp_options_end", "gomobile_usercp_options");
 $plugins->add_hook("usercp_do_options_end", "gomobile_usercp_options");
 
-// Misc hooks
+// Misc. hooks
 $plugins->add_hook("misc_start", "gomobile_switch_version");
 
 // Admin hooks, for adding our control panel page, and only if we're in the ACP
 if(defined("IN_ADMINCP"))
 {
-	$plugins->add_hook('admin_config_action_handler','gomobile_adminAction');
-	$plugins->add_hook('admin_config_menu','gomobile_adminLink');
-	$plugins->add_hook('admin_load','gomobile_admin');
+	$plugins->add_hook('admin_config_settings_change_commit','gomobile_admin_update');
 }
 
-// Load our custom language file
+// Load up the custom language file
 global $lang;
 $lang->load("gomobile");
 
+// Plugin information
 function gomobile_info()
 {
 	global $lang;
@@ -75,38 +49,15 @@ function gomobile_info()
 		"website"		=> "http://www.mybbgm.com",
 		"author"		=> "MyBB GoMobile",
 		"authorsite"	=> "http://www.mybbgm.com",
-		"version"		=> "1.0 Beta 4",
+		"version"		=> "1.0",
 		"compatibility" => "16*"
 	);
 }
 
+// Installation functions
 function gomobile_install()
 {
 	global $db, $mybb, $lang, $cache;
-
-	// Install the right database table for our database type
-	switch($mybb->config['database']['type'])
-	{
-		case "pgsql":
-			$db->query("CREATE TABLE ".TABLE_PREFIX."gomobile (
-				gmtid serial,
-				string varchar(120) NOT NULL default '',
-				PRIMARY KEY (gmtid)
-			);");
-			break;
-		case "sqlite":
-			$db->query("CREATE TABLE ".TABLE_PREFIX."gomobile (
-				gmtid INTEGER PRIMARY KEY,
-				string varchar(120) NOT NULL default '')
-			);");
-			break;
-		default:
-			$db->query("CREATE TABLE ".TABLE_PREFIX."gomobile (
-				gmtid int(10) unsigned NOT NULL auto_increment,
-				string varchar(120) NOT NULL default '',
-				PRIMARY KEY(gmtid)
-			) ENGINE=MyISAM;");
-	}
 
 	// Add a column to the posts & threads tables for tracking mobile posts
 	$db->query("ALTER TABLE ".TABLE_PREFIX."posts ADD mobile int(1) NOT NULL default '0'");
@@ -116,10 +67,10 @@ function gomobile_install()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD usemobileversion int(1) NOT NULL default '1'");
 
 	// First, check that our theme doesn't already exist
-	$query = $db->simple_select("themes", "tid", "LOWER(name) LIKE '%gomobile 1.0%'");
+	$query = $db->simple_select("themes", "tid", "LOWER(name) LIKE '%mybb gomobile%'");
 	if($db->num_rows($query))
 	{
-		// We already have the GoMobile theme installed
+		// Theme is already installed
 		$theme = $db->fetch_field($query, "tid");
 	}
 	else
@@ -148,52 +99,38 @@ function gomobile_install()
 		}
 	}
 
-	// Get a list of default UA strings ready for insertion
-	// You can also add more from your ACP
-	$data_array = array(
-		"iPhone",
-		"iPod",
-		"mobile",
-		"Android",
-		"Opera Mini",
-		"BlackBerry",
-		"IEMobile",
-		"Windows Phone",
-		"HTC",
-		"Nokia",
-		"Netfront",
-		"SmartPhone",
-		"Symbian",
-		"SonyEricsson",
-		"AvantGo",
-		"DoCoMo",
-		"Pre/",
-		"UP.Browser"
-	);
-
-	// Insert the data listed above
-	foreach($data_array as $data)
-	{
-		$gomobile = array(
-			"gmtid" => -1,
-			"string" => $db->escape_string($data)
-		);
-
-		$db->insert_query("gomobile", $gomobile);
-	}
+	// Default strings
+	$strings = "iPhone
+iPod
+mobile
+Android
+Opera Mini
+BlackBerry
+IEMobile
+Windows Phone
+HTC
+Nokia
+Netfront
+SmartPhone
+Symbian
+SonyEricsson
+AvantGo
+DoCoMo
+Pre/
+UP.Browser";
 
 	// Edit existing templates (shows when posts are from GoMobile)
 	require_once MYBB_ROOT."inc/adminfunctions_templates.php";
 
 	find_replace_templatesets("postbit_posturl", '#'.preg_quote('<span').'#', '<img src="{$mybb->settings[\'bburl\']}/images/mobile/posted_{$post[\'mobile\']}.gif" alt="" width="{$post[\'mobile\']}8" height="{$post[\'mobile\']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> '.'<span');
 
-	// Get our settings ready
+	// Prepare to insert the settings
 	$setting_group = array
 	(
 		"gid" => "NULL",
 		"name" => "gomobile",
 		"title" => "GoMobile Settings",
-		"description" => "Configures options for MyBB GoMobile.",
+		"description" => "Options, settings and strings used by MyBB GoMobile.",
 		"disporder" => "1",
 		"isdefault" => "0",
 	);
@@ -236,6 +173,13 @@ function gomobile_install()
 			"optionscode"	=> "text",
 			"value"			=> $db->escape_string($mybb->settings['homeurl']),
 			"disporder"		=> ++$dispnum
+		),
+		"gomobile_strings" => array(
+			"title"			=> $lang->gomobile_settings_strings_title,
+			"description"	=> $lang->gomobile_settings_strings,
+			"optionscode"	=> "textarea",
+			"value"			=> $db->escape_string($strings),
+			"disporder"		=> ++$dispnum
 		)
 	);
 
@@ -253,9 +197,10 @@ function gomobile_install()
 	gomobile_update_cache();
 }
 
+// Checks to see if the plugin is installed already
 function gomobile_is_installed()
 {
-    global $mybb, $cache;
+    global $cache;
 	
 	// Is the cache [the last installation step performed] ready for use?
 	$cacheready = $cache->read('gomobile');
@@ -264,16 +209,14 @@ function gomobile_is_installed()
     {
         return true;
     }
-
     return false;
-} 
+}
 
+// Uninstall MyBB GoMobile
+// Not that anyone would want to do that, right? ;P
 function gomobile_uninstall()
 {
 	global $db, $cache;
-
-	// Drop the GoMobile table
-	$db->drop_table("gomobile");
 
 	// Clean up the users, posts & threads tables
 	$db->query("ALTER TABLE ".TABLE_PREFIX."posts DROP COLUMN mobile");
@@ -296,15 +239,18 @@ function gomobile_uninstall()
 	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='gomobile_permstoggle'");
 	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='gomobile_homename'");
 	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='gomobile_homelink'");
+	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='gomobile_strings'");
 }
 
+// This function checks if the UA string matches the database
+// If so, it displays the GoMobile theme
 function gomobile_forcetheme()
 {
 	global $db, $mybb, $plugins, $cache;
 
 	if($mybb->session->is_spider == false)
 	{
-		// Force some changes to our footer but only if we're not a bot
+		// Force some changes to our footer, but only if we're not a bot
 		$GLOBALS['gmb_orig_style'] = intval($mybb->user['style']);
 		$GLOBALS['gmb_post_key'] = md5($mybb->post_code);
 
@@ -312,35 +258,40 @@ function gomobile_forcetheme()
 	}
 
 	// Has the user chosen to disable GoMobile completely?
-	if(isset($mybb->user['usemobileversion']) && $mybb->user['usemobileversion'] == 0 && $mybb->user['uid'] && !$mybb->cookies['use_dmv'])
+	if(isset($mybb->user['usemobileversion']) && $mybb->user['usemobileversion'] == 0 && $mybb->user['uid'] && $mybb->cookies['gomobile'] != "force" )
 	{
 		return false;
 	}
 
 	// Has the user temporarily disabled GoMobile via cookies?
-	if($mybb->cookies['no_use_dmv'] == "1")
+	if($mybb->cookies['gomobile'] == "disabled")
 	{
 		return false;
 	}
 	
 	// Is the admin using theme permission settings?
 	// If so, check them
-	if($mybb->settings['gomobile_permstoggle'] == 1) {
+	if($mybb->settings['gomobile_permstoggle'] == 1)
+	{
 		// Fetch the theme permissions from the database
-		$tquery = $db->simple_select("themes", "*", "tid like '{$mybb->settings['gomobile_theme_id']}'");
+		$tquery = $db->simple_select("themes", "*", "tid = '{$mybb->settings['gomobile_theme_id']}'");
 		$tperms = $db->fetch_field($tquery, "allowedgroups");
-		if($tperms != "all") {
+		if($tperms != "all")
+		{
 			$canuse = explode(",", $tperms);
 		}
 	
 		// Also explode our user's additional groups
-		if($mybb->user['additionalgroups']) {
+		if($mybb->user['additionalgroups'])
+		{
 			$userag = explode(",", $mybb->user['additionalgroups']);
 		}
 	
 		// If the user doesn't have permission to use the theme...
-		if($tperms != "all") {
-			if(!in_array($mybb->user['usergroup'], $canuse) && !in_array($userag, $canuse)) {
+		if($tperms != "all")
+		{
+			if(!in_array($mybb->user['usergroup'], $canuse) && !in_array($userag, $canuse))
+			{
 				return false;
 			}
 		}
@@ -356,7 +307,7 @@ function gomobile_forcetheme()
 		if(!$switch)
 		{
 			// Switch to GoMobile if the UA matches our list
-			if(stristr($_SERVER['HTTP_USER_AGENT'], $uastring) == TRUE)
+			if(stristr($_SERVER['HTTP_USER_AGENT'], $uastring))
 			{
 				$switch = true;
 				$mybb->user['style'] = $mybb->settings['gomobile_theme_id'];
@@ -365,28 +316,28 @@ function gomobile_forcetheme()
 	}
 
 	// Have we got this far without catching somewhere? Have we enabled mobile version?
-	if($mybb->cookies['use_dmv'] == 1 && $switch == false)
+	if($mybb->cookies['gomobile'] == "force" && $switch == false)
 	{
 		$mybb->user['style'] = $mybb->settings['gomobile_theme_id'];
 	}
 }
 
+// Add a link in the footer only if we're not a bot
 function gomobile_forcefooter()
 {
     global $lang, $footer, $mybb, $navbits;
 
-	// Replace the footer, but only if the visitor isn't a bot
     $footer = str_replace("<a href=\"<archive_url>\">".$lang->bottomlinks_litemode."</a>", "<a href=\"misc.php?action=switch_version&amp;my_post_key=".$GLOBALS['gmb_post_key']."\">".$lang->gomobile_mobile_version."</a>", $footer);
-
-    if($mybb->user['style'] == $mybb->settings['gomobile_theme_id'])
+	
+	// If we have a match, override the default breadcrumb
+	if($mybb->user['style'] == $mybb->settings['gomobile_theme_id'])
     {
-        // Override default breadcrumb bbname (for mobile theme only)
         $navbits = array();
-        $navbits[0]['name'] = $mybb->settings['gomobile_mobile_name'];
-        $navbits[0]['url'] = $mybb->settings['bburl']."/index.php";    
+        $navbits[0]['name'] = $mybb->settings['gomobile_mobile_name'];  
     }
 }
 
+// Page numbers and links, whoop
 function gomobile_showthread()
 {
 	global $mybb, $lang, $postcount, $perpage, $thread, $pagejump, $pages, $page_location;
@@ -406,13 +357,13 @@ function gomobile_showthread()
 	}
 }
 
+// Was this post sent from GoMobile?
 function gomobile_posts($p)
 {
     global $mybb;
 
     $is_mobile = intval($mybb->input['mobile']);
-	
-	// Was the post sent from GoMobile?
+
 	if($is_mobile != 1) {
 		$is_mobile = 0;
 	}
@@ -425,9 +376,10 @@ function gomobile_posts($p)
     return $p;
 } 
 
+// Was this thread sent from GoMobile? (identical to above, only for threads)
+// Might be redundant to some people, but meh
 function gomobile_threads($p)
 {
-	// Exact same as above, only for threads
     global $mybb;
 
     $is_mobile = intval($mybb->input['mobile']);
@@ -443,221 +395,19 @@ function gomobile_threads($p)
     return $p;
 }
 
-function gomobile_update_cache() {
-	global $db, $cache;
-
-	// Update or install the GoMobile cache
-	$list = $db->query("SELECT gmtid,string FROM " .TABLE_PREFIX. "gomobile");
-	$stringlist = array();
-	
-	while($uastring = $db->fetch_array($list))
-	{
-		$stringlist[] = $db->escape_string($uastring['string']);
-	}
-	
-	$cache->update("gomobile", $stringlist);
-}
-
-function gomobile_adminAction(&$action)
+// Update or install GoMobile cache
+function gomobile_update_cache()
 {
-	// I'm honestly not sure what this is for...
-	$action['gomobile'] = array('active' => 'gomobile');
-}
-
-function gomobile_adminLink(&$sub)
-{
-	global $lang;
-
-	end($sub);
-
-	$key = key($sub) + 10;
-
-	$sub[$key] = array(
-		'id' => 'gomobile',
-		'title' => $lang->gomobile_sidemenu,
-		'link' => 'index.php?module=config/gomobile'
-	);
-}
-
-function gomobile_admin()
-{
-	global $mybb, $page, $db, $lang;
+	global $db, $cache, $mybb;
 	
-	if($page->active_action != 'gomobile')
-	{
-		return false;
-	}
-
-	$page->add_breadcrumb_item($lang->gomobile, 'index.php?module=config-gomobile');
-
-	if($mybb->input['action'] == 'edit')
-	{
-		// Adding or creating a string...
-		if(!isset($mybb->input['gmtid']) || intval($mybb->input['gmtid']) == 0)
-		{
-			flash_message($lang->gomobile_noexist, 'error');
-			admin_redirect('index.php?module=config/gomobile');
-		}
-		else
-		{
-			$gmtid = intval($mybb->input['gmtid']);
-		}
-
-		if($mybb->input['save'])
-		{
-			// User wants to save. Grab the values for later
-			$gomobile['string'] = $mybb->input['string'];
-
-			// Did they forget to fill in the string?
-			if($gomobile['string'] == '')
-			{
-				$error = $lang->gomobile_nostring;
-			}
-			else
-			{
-				// No? Let's save it then
-				$gomobile['string'] = $db->escape_string($gomobile['string']);
-
-				// Did they create a new one?
-				if($gmtid == -1)
-				{
-					// Yes, so we need to add a new database row
-					$db->insert_query("gomobile", $gomobile);
-					
-					// Update the cache
-					gomobile_update_cache();
-				}
-				else
-				{
-					// No, so we just update the existing one.
-					// To do: check to make sure the gmtid exists
-					$db->update_query("gomobile", $gomobile, "gmtid='{$gmtid}'");
-					
-					// Update the cache
-					gomobile_update_cache();
-				}
-
-				flash_message($lang->gomobile_saved, 'success');
-				admin_redirect('index.php?module=config/gomobile');
-			}
-		}
-		else if($mybb->input['delete'])
-		{
-			// Delete the string and return to the main menu
-			$db->delete_query("gomobile", "gmtid='{$gmtid}'");
-			
-			// Update the cache
-			gomobile_update_cache();
-
-			admin_redirect('index.php?module=config/gomobile');
-		}
-
-		// If there was a problem saving earlier,
-		// we've already got this stuff, and the
-		// user just needs to fix it
-		if(!isset($gomobile))
-		{
-			// If it doesn't exist yet, let's fill it out
-			if($gmtid != -1)
-			{
-				// The user is editing an existing string, so load it
-				$query = $db->simple_select("gomobile", "string", "gmtid='{$gmtid}'");
-				$gomobile = $db->fetch_array($query);
-			}
-			else
-			{
-				// The user is creating a new one, so fill it with some defaults
-				$gomobile['string'] = "";
-			}
-		}
-
-		// If at this point $gomobile == null,
-		// we tried to load a non-existant string.
-		if($gomobile != null)
-		{
-			// At this point, though, it does exist so
-			// do the edity thingy
-			$page->add_breadcrumb_item($lang->gomobile_edit);
-			$page->output_header($lang->gomobile);
-
-			// Display any errors set earlier
-			if(isset($error))
-			{
-				$page->output_inline_error($error);
-			}
-
-			// Create edit box
-			$form = new Form('index.php?module=config/gomobile&amp;action=edit&amp;gmtid=' . $gmtid, 'post');
-			$form_container = new FormContainer($lang->gomobile_edit);
-
-			// Long and ugly.
-			// basically ends up as title, description, form thing(name, value, extras)
-			$form_container->output_row($lang->gomobile_string, $lang->gomobile_string_desc, $form->generate_text_box('string', htmlspecialchars($gomobile['string']), array('id' => 'string')));
-
-			// Done with the box!
-			$form_container->end();
-
-			// Buttons! Buttons everywhere!
-			$buttons[] = $form->generate_submit_button($lang->gomobile_save, array('name' => 'save', 'id' => 'save'));
-
-			// If the user is creating a new one, there's no sense in
-			// showing the delete button.
-			if($gmtid != -1)
-			{
-				$buttons[] = $form->generate_submit_button($lang->gomobile_delete, array('name' => 'delete', 'id' => 'delete'));
-			}
-
-			// Show the button(s)
-			$form->output_submit_wrapper($buttons);
-
-			// And we're done!
-			$form->end();
-			$page->output_footer();
-		}
-		else
-		{
-			// This happens if the user tried to edit a non-existant string
-			flash_message($lang->gomobile_noexist, 'error');
-			admin_redirect('index.php?module=config/gomobile');
-		}
-	}
-	else
-	{
-		// This is the main menu
-		$page->output_header($lang->gomobile);
-
-		// Make a box for the menu
-		$table = new Table;
-		$table->construct_header($lang->gomobile_string);
-		$table->construct_header($lang->controls, array("class" => "align_center", "width" => 155));
-
-		// list existing stringes
-		$query = $db->simple_select("gomobile", "gmtid, string");
-		while($list = $db->fetch_array($query))
-		{
-			// show the string
-			$list['string'] = htmlspecialchars($list['string']);
-			$table->construct_cell("<strong>{$list['string']}</strong>");
-
-			// Show the edit and delete menu
-			$popup = new PopupMenu("gomobile_{$list['gmtid']}", $lang->options);
-			$popup->add_item($lang->gomobile_edit, "index.php?module=config/gomobile&amp;action=edit&amp;gmtid={$list['gmtid']}");
-			$popup->add_item($lang->gomobile_delete, "index.php?module=config/gomobile&amp;action=edit&amp;delete=true&amp;gmtid={$list['gmtid']}");
-			$table->construct_cell($popup->fetch(), array("class" => "align_center", "width" => 155));
-
-			// Done!
-			$table->construct_row();
-		}
-
-		// list 'add new string' link
-		$table->construct_cell("<strong><a href=\"index.php?module=config/gomobile&amp;action=edit&amp;gmtid=-1\">{$lang->gomobile_addnew}</a></strong>");
-		$table->construct_cell('');
-		$table->construct_row();
-
-		// Done!
-		$table->output($lang->gomobile);
-		$page->output_footer();
-	}
+	$list = $mybb->settings['gomobile_strings'];
+	
+	$replace = array("\n", "\r");
+	$list = str_replace($replace, ",", $list);
+	
+	$cacheList = explode(",", $list);
+	
+	$cache->update("gomobile", $cacheList);
 }
 
 function gomobile_usercp_options()
@@ -717,17 +467,22 @@ function gomobile_switch_version()
 
 	if($mybb->input['do'] == "full")
 	{
-		my_unsetcookie("use_dmv");
-		my_setcookie("no_use_dmv", 1, -1);
+		my_setcookie("gomobile", "disabled", -1);
 	}
 	else
 	{
 		// Assume we're wanting to switch to the mobile version
-		my_unsetcookie("no_use_dmv");
-		my_setcookie("use_dmv", 1, -1);
+		my_setcookie("gomobile", "force", -1);
 	}
 
 	$lang->load("gomobile");
 	redirect($url, $lang->gomobile_switched_version);
+}
+
+// Update the cache whenever settings are changed
+// Not perfect, but it works
+function gomobile_admin_update()
+{
+	gomobile_update_cache();
 }
 ?>
