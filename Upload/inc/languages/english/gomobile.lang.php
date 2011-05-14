@@ -33,17 +33,7 @@
 
 // ACP Strings
 $l['gomobile'] = "MyBB GoMobile";
-$l['gomobile_sidemenu'] = "GoMobile Tools";
 $l['gomobile_desc'] = "The free mobile MyBB solution.";
-$l['gomobile_string'] = "User Agent String";
-$l['gomobile_addnew'] = "Add New String";
-$l['gomobile_edit'] = "Edit String";
-$l['gomobile_save'] = "Save String";
-$l['gomobile_delete'] = "Delete String";
-$l['gomobile_noexist'] = "That string doesn't exist!";
-$l['gomobile_string_desc'] = "Enter the User Agent String that GoMobile should send to the mobile theme.";
-$l['gomobile_nostring'] = "Please enter a string.";
-$l['gomobile_saved'] = "String successfully added!";
 
 // Setting Strings
 $l['gomobile_settings_mobile_name_title'] = "Mobile Board Name";
@@ -60,6 +50,8 @@ $l['gomobile_settings_homename_title'] = "Home Name";
 $l['gomobile_settings_homename'] = "This is the text that will appear in the footer of GoMobile in place of the home link. It is recommended that you keep this to as few charaters as possible.";
 $l['gomobile_settings_homelink_title'] = "Home Link";
 $l['gomobile_settings_homelink'] = "Below is the link that appears in the footer of GoMobile.";
+$l['gomobile_settings_strings_title'] = "User Agent Strings";
+$l['gomobile_settings_strings'] = "Separated by a new line, enter the strings you wish to check for and then send to the mobile theme. You should not normally need to adjust this.";
 
 // Misc. strings used through GoMobile
 $l['gomobile_mobile_version'] = "Mobile Version";
