@@ -333,7 +333,8 @@ function gomobile_forcefooter()
 	if($mybb->user['style'] == $mybb->settings['gomobile_theme_id'])
     {
         $navbits = array();
-        $navbits[0]['name'] = $mybb->settings['gomobile_mobile_name'];  
+		$navbits[0]['url'] = $mybb->settings['bburl'];
+        $navbits[0]['name'] = $mybb->settings['gomobile_mobile_name'];
     }
 }
 
@@ -410,6 +411,8 @@ function gomobile_update_cache()
 	$cache->update("gomobile", $cacheList);
 }
 
+
+// Add GoMobile-related options to the UCP
 function gomobile_usercp_options()
 {
 	global $db, $mybb, $templates, $user;
@@ -468,6 +471,10 @@ function gomobile_switch_version()
 	if($mybb->input['do'] == "full")
 	{
 		my_setcookie("gomobile", "disabled", -1);
+	}
+	if($mybb->input['do'] == "clear")
+	{
+		my_setcookie("gomobile", "nothing", -1);
 	}
 	else
 	{
