@@ -84,7 +84,7 @@ $l['gomobile_bbclosed'] = "Your board is set to closed.";
 $l['gomobile_nosubs'] = "No subscriptions.";
 $l['gomobile_newsubs'] = "New Posts in Subscribed Threads";
 $l['gomobile_redirect_portal'] = "Your Administrator has chosen to disable viewing the portal while browsing via GoMobile, redirecting to an alternative page...";
-$l['gomobile_use_mobile_version'] = "Use a mobile version if I visit from a mobile device";
+$l['gomobile_use_mobile_version'] = "Use a mobile version if I visit from a mobile device? (<a href='misc.php?action=switch_version&amp;do=full&amp;my_post_key={$GLOBALS['gmb_post_key']}'>clear cookies</a>)";
 $l['gomobile_switched_version'] = "Switching versions.<br />Please wait while we transfer you back...";
 $l['gomobile_lastpost'] = "Last post: ";
 $l['gomobile_orderby'] = "Order by: ";
