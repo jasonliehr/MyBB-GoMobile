@@ -57,9 +57,39 @@ function gomobile_info()
 // Installation functions
 function gomobile_install()
 {
-	global $db, $mybb, $lang, $cache;
+	global $db, $mybb, $lang, $cache, $cleanInstall;
+	
+	// Clean up the tables before installing
+	// MyBB tables cleanup
+	if($db->field_exists("mobile", "posts"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."posts DROP COLUMN mobile");
+	}
+		
+	if($db->field_exists("mobile", "threads"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."threads DROP COLUMN mobile");
+	}
+		
+	if($db->field_exists("usemobileversion", "users"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP COLUMN usemobileversion");
+	}
+		
+	// Cache cleanup
+	$db->delete_query("datacache", "title='gomobile'");
+	
+	// Settings cleanup
+	$db->query("DELETE FROM ".TABLE_PREFIX."settinggroups WHERE name='gomobile'");
+	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='gomobile_header_text'");
+	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='gomobile_theme_id'");
+	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='gomobile_permstoggle'");
+	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='gomobile_homename'");
+	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='gomobile_homelink'");
+	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='gomobile_strings'");
 
 	// Add a column to the posts & threads tables for tracking mobile posts
+	// If we're doing a clean install, remove any existing structure modifications
 	$db->query("ALTER TABLE ".TABLE_PREFIX."posts ADD mobile int(1) NOT NULL default '0'");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD mobile int(1) NOT NULL default '0'");
 
@@ -127,12 +157,12 @@ UP.Browser";
 	// Prepare to insert the settings
 	$setting_group = array
 	(
-		"gid" => "NULL",
+		"gid" => 0,
 		"name" => "gomobile",
 		"title" => "GoMobile Settings",
 		"description" => "Options, settings and strings used by MyBB GoMobile.",
-		"disporder" => "1",
-		"isdefault" => "0",
+		"disporder" => 1,
+		"isdefault" => 0,
 	);
 
 	$gid = $db->insert_query("settinggroups", $setting_group);
@@ -218,21 +248,27 @@ function gomobile_uninstall()
 {
 	global $db, $cache;
 
-	// Clean up the users, posts & threads tables
-	$db->query("ALTER TABLE ".TABLE_PREFIX."posts DROP COLUMN mobile");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."threads DROP COLUMN mobile");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP COLUMN usemobileversion");
-
-	// Can the template edits we made earlier
-	require_once MYBB_ROOT."inc/adminfunctions_templates.php";
-
-	// Undo the template edits
-	find_replace_templatesets("postbit_posturl", '#'.preg_quote('<img src="{$mybb->settings[\'bburl\']}/images/mobile/posted_{$post[\'mobile\']}.gif" alt="" width="{$post[\'mobile\']}8" height="{$post[\'mobile\']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> '.'').'#', '', 0);
-
-	// Remove the GoMobile cache
+	// Smarter uninstall, same as install function's cleanup
+	// MyBB tables cleanup
+	if($db->field_exists("mobile", "posts"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."posts DROP COLUMN mobile");
+	}
+		
+	if($db->field_exists("mobile", "threads"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."threads DROP COLUMN mobile");
+	}
+		
+	if($db->field_exists("usemobileversion", "users"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP COLUMN usemobileversion");
+	}
+		
+	// Cache cleanup
 	$db->delete_query("datacache", "title='gomobile'");
 	
-	// Lastly, remove the settings for GoMobile
+	// Settings cleanup
 	$db->query("DELETE FROM ".TABLE_PREFIX."settinggroups WHERE name='gomobile'");
 	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='gomobile_header_text'");
 	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='gomobile_theme_id'");
@@ -240,6 +276,12 @@ function gomobile_uninstall()
 	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='gomobile_homename'");
 	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='gomobile_homelink'");
 	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='gomobile_strings'");
+
+	// Can the template edits we made earlier
+	require_once MYBB_ROOT."inc/adminfunctions_templates.php";
+
+	// Undo the template edits
+	find_replace_templatesets("postbit_posturl", '#'.preg_quote('<img src="{$mybb->settings[\'bburl\']}/images/mobile/posted_{$post[\'mobile\']}.gif" alt="" width="{$post[\'mobile\']}8" height="{$post[\'mobile\']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> '.'').'#', '', 0);
 }
 
 // This function checks if the UA string matches the database
