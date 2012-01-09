@@ -1,6 +1,6 @@
 <?php
 /*
-* MyBB GoMobile - Version 1.0 Gold
+* MyBB GoMobile - 1.0 Pre-Release 1
 * Licensed under GNU/GPL v3
 */
 
@@ -59,7 +59,7 @@ function gomobile_install()
 {
 	global $db, $mybb, $lang, $cache, $cleanInstall;
 	
-	// Clean up the tables before installing
+	// Clean up the database before installing
 	// MyBB tables cleanup
 	if($db->field_exists("mobile", "posts"))
 	{
@@ -89,7 +89,6 @@ function gomobile_install()
 	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='gomobile_strings'");
 
 	// Add a column to the posts & threads tables for tracking mobile posts
-	// If we're doing a clean install, remove any existing structure modifications
 	$db->query("ALTER TABLE ".TABLE_PREFIX."posts ADD mobile int(1) NOT NULL default '0'");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD mobile int(1) NOT NULL default '0'");
 
@@ -318,6 +317,7 @@ function gomobile_forcetheme()
 		// Fetch the theme permissions from the database
 		$tquery = $db->simple_select("themes", "*", "tid = '{$mybb->settings['gomobile_theme_id']}'");
 		$tperms = $db->fetch_field($tquery, "allowedgroups");
+		
 		if($tperms != "all")
 		{
 			$canuse = explode(",", $tperms);
@@ -346,7 +346,7 @@ function gomobile_forcetheme()
 	foreach($list as $uastring)
 	{
 		// Run as long as there hasn't been a match yet
-		if(!$switch)
+		if(!$switch && $uastring)
 		{
 			// Switch to GoMobile if the UA matches our list
 			if(stristr($_SERVER['HTTP_USER_AGENT'], $uastring))
@@ -447,8 +447,10 @@ function gomobile_update_cache()
 	
 	$replace = array("\n", "\r");
 	$list = str_replace($replace, ",", $list);
+	// Do it again to remove empty values, stupid \r
+	$list = str_replace(",,", ",", $list);
 	
-	$cacheList = explode(",", $list);
+	$cacheList = array_unique(explode(",", $list));
 	
 	$cache->update("gomobile", $cacheList);
 }
