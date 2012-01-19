@@ -34,8 +34,13 @@ if(defined("IN_ADMINCP"))
 }
 
 // Load up the custom language file
-global $lang;
-$lang->load("gomobile");
+$plugins->add_hook("global_start", "gomobile_lang");
+
+function gomobile_lang()
+{
+	global $lang;
+	$lang->load("gomobile");
+}
 
 // Plugin information
 function gomobile_info()
