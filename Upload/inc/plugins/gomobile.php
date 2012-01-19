@@ -1,6 +1,6 @@
 <?php
 /*
-* MyBB GoMobile - 1.0 Pre-Release 1
+* MyBB GoMobile - 1.0 Pre-Release 2
 * Licensed under GNU/GPL v3
 */
 
@@ -27,25 +27,12 @@ $plugins->add_hook("usercp_do_options_end", "gomobile_usercp_options");
 // Misc. hooks
 $plugins->add_hook("misc_start", "gomobile_switch_version");
 
-// Admin hooks, for adding our control panel page, and only if we're in the ACP
-if(defined("IN_ADMINCP"))
-{
-	$plugins->add_hook('admin_config_settings_change_commit','gomobile_admin_update');
-}
-
-// Load up the custom language file
-$plugins->add_hook("global_start", "gomobile_lang");
-
-function gomobile_lang()
-{
-	global $lang;
-	$lang->load("gomobile");
-}
-
 // Plugin information
 function gomobile_info()
 {
 	global $lang;
+	
+	$lang->load("gomobile");
 
 	// Plugin information
 	return array(
@@ -62,7 +49,9 @@ function gomobile_info()
 // Installation functions
 function gomobile_install()
 {
-	global $db, $mybb, $lang, $cache, $cleanInstall;
+	global $db, $mybb, $lang;
+
+	$lang->load("gomobile");
 	
 	// Clean up the database before installing
 	// MyBB tables cleanup
@@ -80,9 +69,6 @@ function gomobile_install()
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP COLUMN usemobileversion");
 	}
-		
-	// Cache cleanup
-	$db->delete_query("datacache", "title='gomobile'");
 	
 	// Settings cleanup
 	$db->query("DELETE FROM ".TABLE_PREFIX."settinggroups WHERE name='gomobile'");
@@ -226,20 +212,17 @@ UP.Browser";
 		$db->insert_query("settings", $setting);
 	}
 	rebuild_settings();
-	
-	// Install the cache from the gomobile table
-	gomobile_update_cache();
 }
 
 // Checks to see if the plugin is installed already
 function gomobile_is_installed()
 {
-    global $cache;
+    global $db;
 	
 	// Is the cache [the last installation step performed] ready for use?
-	$cacheready = $cache->read('gomobile');
+	$installed = $db->simple_select("settings", "*", "name='gomobile_strings'");
 
-    if($cacheready != 0)
+    if($db->num_rows($installed))
     {
         return true;
     }
@@ -268,9 +251,6 @@ function gomobile_uninstall()
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP COLUMN usemobileversion");
 	}
-		
-	// Cache cleanup
-	$db->delete_query("datacache", "title='gomobile'");
 	
 	// Settings cleanup
 	$db->query("DELETE FROM ".TABLE_PREFIX."settinggroups WHERE name='gomobile'");
@@ -292,7 +272,9 @@ function gomobile_uninstall()
 // If so, it displays the GoMobile theme
 function gomobile_forcetheme()
 {
-	global $db, $mybb, $plugins, $cache;
+	global $db, $mybb, $plugins, $cache, $lang;
+	
+	$lang->load("gomobile");
 
 	if($mybb->session->is_spider == false)
 	{
@@ -344,8 +326,14 @@ function gomobile_forcetheme()
 		}
 	}
 
-	// Load the list of stringes from the cache
-	$list = $cache->read('gomobile');
+	// Grab the strings and put them into an array
+	$list = $mybb->settings['gomobile_strings'];
+	
+	$replace = array("\n", "\r");
+	$list = str_replace($replace, ",", $list);
+	$list = str_replace(",,", ",", $list);
+	
+	$list = explode(",", $list);
 
 	$switch = false;
 	foreach($list as $uastring)
@@ -443,24 +431,6 @@ function gomobile_threads($p)
     return $p;
 }
 
-// Update or install GoMobile cache
-function gomobile_update_cache()
-{
-	global $db, $cache, $mybb;
-	
-	$list = $mybb->settings['gomobile_strings'];
-	
-	$replace = array("\n", "\r");
-	$list = str_replace($replace, ",", $list);
-	// Do it again to remove empty values, stupid \r
-	$list = str_replace(",,", ",", $list);
-	
-	$cacheList = array_unique(explode(",", $list));
-	
-	$cache->update("gomobile", $cacheList);
-}
-
-
 // Add GoMobile-related options to the UCP
 function gomobile_usercp_options()
 {
@@ -484,7 +454,7 @@ function gomobile_usercp_options()
 
 	$usercp_option = '</tr><tr>
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="usemobileversion" id="usemobileversion" value="1" {$GLOBALS[\'$usemobileversioncheck\']} /></td>
-<td><span class="smalltext"><label for="usemobileversion">{$lang->gomobile_use_mobile_version}</label></span></td>';
+<td><span class="smalltext"><label for="usemobileversion">{$lang->gomobile_use_mobile_version}(<a href="misc.php?action=switch_version&amp;do=clear&amp;my_post_key={$GLOBALS[\'gmb_post_key\']}">{$lang->gomobile_clear_cookies}</a>)</label></span></td>';
 
 	$find = '{$lang->show_codebuttons}</label></span></td>';
 	$templates->cache['usercp_options'] = str_replace($find, $find.$usercp_option, $templates->cache['usercp_options']);
@@ -497,6 +467,7 @@ function gomobile_usercp_options()
 	}
 }
 
+// Switch to the mobile view via the footer link
 function gomobile_switch_version()
 {
 	global $db, $lang, $mybb;
@@ -519,10 +490,12 @@ function gomobile_switch_version()
 
 	if($mybb->input['do'] == "full")
 	{
+		// Disable the mobile theme
 		my_setcookie("gomobile", "disabled", -1);
 	}
-	if($mybb->input['do'] == "clear")
+	elseif($mybb->input['do'] == "clear")
 	{
+		// Clear the mobile theme cookie
 		my_setcookie("gomobile", "nothing", -1);
 	}
 	else
@@ -535,10 +508,4 @@ function gomobile_switch_version()
 	redirect($url, $lang->gomobile_switched_version);
 }
 
-// Update the cache whenever settings are changed
-// Not perfect, but it works
-function gomobile_admin_update()
-{
-	gomobile_update_cache();
-}
 ?>
