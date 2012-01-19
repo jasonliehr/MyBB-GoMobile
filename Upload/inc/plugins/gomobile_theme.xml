@@ -2147,7 +2147,7 @@ td.forum_on {
 			<div id="copyright">
 				<!-- Do not remove. -->
 					{$lang->gomobile_copyrights}
-					<br /><a href="misc.php?action=switch_version&amp;do=full&amp;my_post_key={$GLOBALS['gmb_post_key']}">Switch to Full Version</a>
+					<br /><a href="misc.php?action=switch_version&amp;do=full&amp;my_post_key={$GLOBALS['gmb_post_key']}">{$lang->gomobile_switch_full}</a>
 					{$task_image}
 					{$auto_dst_detection}
 				<!-- End Do not removes. -->
