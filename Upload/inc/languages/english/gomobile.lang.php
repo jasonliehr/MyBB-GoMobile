@@ -1,34 +1,7 @@
 <?php
 /*
- MyBB GoMobile Language Strings - Version: 1.0 Beta 4
- Based on UA Theme. Notices below.
-
- Copyright (c) 2010, Fawkes Software
- All rights reserved.
-
- Redistribution and use in source and binary forms, with or without modification,
- are permitted provided that the following conditions are met:
-
- * Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
- * Neither the name of Fawkes Software nor the names of its contributors may be
-   used to endorse or promote products derived from this software without specific
-   prior written permission.
-
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
- EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
- SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
- INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
- TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
- BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
- ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- 
- inc/languages/xxx/gomobile.lang.php: The various strings shown to the user
+* MyBB GoMobile - 1.0 Pre-Release 2 Language File
+* Licensed under GNU/GPL v3
 */
 
 // ACP Strings
@@ -55,6 +28,7 @@ $l['gomobile_settings_strings'] = "Separated by a new line, enter the strings yo
 
 // Misc. strings used through GoMobile
 $l['gomobile_mobile_version'] = "Mobile Version";
+$l['gomobile_switch_full'] = "Switch to Full Version";
 $l['gomobile_redirect_notice'] = "Redirect Notice";
 $l['gomobile_posted_from'] = "Posted from GoMobile";
 $l['gomobile_ucp'] = "UCP";
@@ -84,7 +58,8 @@ $l['gomobile_bbclosed'] = "Your board is set to closed.";
 $l['gomobile_nosubs'] = "No subscriptions.";
 $l['gomobile_newsubs'] = "New Posts in Subscribed Threads";
 $l['gomobile_redirect_portal'] = "Your Administrator has chosen to disable viewing the portal while browsing via GoMobile, redirecting to an alternative page...";
-$l['gomobile_use_mobile_version'] = "Use a mobile version if I visit from a mobile device? (<a href='misc.php?action=switch_version&amp;do=full&amp;my_post_key={$GLOBALS['gmb_post_key']}'>clear cookies</a>)";
+$l['gomobile_use_mobile_version'] = "Use a mobile version if I visit from a mobile device?";
+$l['gomobile_clear_cookies'] = "clear cookies";
 $l['gomobile_switched_version'] = "Switching versions.<br />Please wait while we transfer you back...";
 $l['gomobile_lastpost'] = "Last post: ";
 $l['gomobile_orderby'] = "Order by: ";
