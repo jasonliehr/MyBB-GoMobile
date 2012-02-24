@@ -2417,7 +2417,7 @@ td.forum_on {
 		<tbody style="{$collapsed['quickreply_e']}" id="quickreply_e">
 			<tr>
 				<td class="trow1" align="center">
-					<textarea style="width: 95%;" rows="6" name="message" id="message" tabindex="1"></textarea>
+					<textarea style="width: 95%;" rows="6" name="message" id="message" tabindex="1"></textarea>{$closeoption}
 				</td>
 			</tr>
 			{$captcha}
