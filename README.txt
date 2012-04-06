@@ -1,7 +1,7 @@
-MYBB GOMOBILE PR2
+MYBB GOMOBILE 1.0
 -----------------
 - This product is licensed under the GNU/GPL v3 license, meaning you are free to do anything within the scope of the license. Within this package, you should find a copy of the license titled 'License.txt'.
-- This product was designed for MyBB 1.6, and has not been thoroughly tested on 1.4. It is recommended you do not install this on a MyBB 1.4.x installation.
+- This version is intended for use with MyBB 1.6.7. You will not receive support if you are not running at least this version, as things are likely to break.
 
 
 
