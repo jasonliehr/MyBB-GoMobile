@@ -1,6 +1,6 @@
 <?php
 /*
-* MyBB GoMobile - 1.0 Pre-Release 2
+* MyBB GoMobile - 1.0
 * Licensed under GNU/GPL v3
 */
 
@@ -137,7 +137,8 @@ SonyEricsson
 AvantGo
 DoCoMo
 Pre/
-UP.Browser";
+UP.Browser
+Playstation Vita";
 
 	// Edit existing templates (shows when posts are from GoMobile)
 	require_once MYBB_ROOT."inc/adminfunctions_templates.php";
