@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB GoMobile" version="1606">
+<theme name="MyBB GoMobile" version="1607">
 	<properties>
-		<templateset><![CDATA[3]]></templateset>
+		<templateset><![CDATA[2]]></templateset>
 		<editortheme><![CDATA[default]]></editortheme>
 		<imgdir><![CDATA[images/mobile]]></imgdir>
 		<logo><![CDATA[]]></logo>
@@ -9,7 +9,7 @@
 		<borderwidth><![CDATA[0]]></borderwidth>
 	</properties>
 	<stylesheets>
-		<stylesheet name="showthread.css" attachedto="showthread.php" version="1606"><![CDATA[ul.thread_tools, ul.thread_tools li {
+		<stylesheet name="showthread.css" attachedto="showthread.php" version="1607"><![CDATA[ul.thread_tools, ul.thread_tools li {
 	list-style: none;
 	padding: 0;
 	margin: 0;
@@ -36,9 +36,10 @@ ul.thread_tools li.subscription_remove a {
 
 
 		
+		
 		]]>
 		</stylesheet>
-		<stylesheet name="usercp.css" attachedto="usercp.php|usercp2.php|private.php" version="1606"><![CDATA[div.usercp_nav_item {
+		<stylesheet name="usercp.css" attachedto="usercp.php|usercp2.php|private.php" version="1607"><![CDATA[div.usercp_nav_item {
 	background: transparent url(images/mobile/cpanels/nav_item_bg.png) top left repeat;
 	color: #fff;
 	padding: 7px;
@@ -83,9 +84,10 @@ div.usercp_nav_item a {
 		
 		
 		
+		
 		]]>
 		</stylesheet>
-		<stylesheet name="modcp.css" attachedto="modcp.php" version="1606"><![CDATA[div.modcp_nav_item {
+		<stylesheet name="modcp.css" attachedto="modcp.php" version="1607"><![CDATA[div.modcp_nav_item {
 	background: transparent url(images/mobile/cpanels/nav_item_bg.png) top left repeat;
 	color: #fff;
 	padding: 7px;
@@ -127,9 +129,10 @@ div.modcp_nav_item a {
 		
 		
 		
+		
 		]]>
 		</stylesheet>
-		<stylesheet name="global.css" version="1606"><![CDATA[
+		<stylesheet name="global.css" version="1607"><![CDATA[
 body {
 	background: #fff;
 	width: auto;
@@ -1028,6 +1031,7 @@ td.forum_on {
 
 
 		
+		
 		]]>
 		</stylesheet>
 	</stylesheets>
@@ -1872,18 +1876,16 @@ td.forum_on {
 		<template name="newthread_disablesmilies" version="1601"><![CDATA[<br />
 <label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="9"{$postoptionschecked['disablesmilies']} /> {$lang->gomobile_disablesmilies}</label>]]></template>
 		<template name="member_profile_online" version="1413"><![CDATA[<a href="online.php"><span class="online" style="font-weight: bold;">{$lang->postbit_status_online}</span></a> ({$location_time})]]></template>
-		<template name="error_nopermission" version="1605"><![CDATA[You don't have permission to access this page. Try logging in below, and if that doesn't work, maybe you're not supposed to be here.</td>
+		<template name="error_nopermission" version="1607"><![CDATA[{$lang->gomobile_error_message}</td>
 </tr>
 </table><br />
 
 <form action="member.php" method="post">
 <input type="hidden" name="action" value="do_login" />
-<input type="hidden" name="url" value="{$url}" />
+<input type="hidden" name="url" value="{$redirect_url}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead" colspan="2"><span class="smalltext float_right" style="padding: 2px;"><strong><a href="member.php?action=register">Register</a> &middot; <a href="member.php?action=lostpw">Forgot your password?</a></strong></span>
-<strong>{$lang->login}</strong></td>
-</tr>
+<tr><td class="thead" colspan="2"><strong>{$lang->login}</strong></td></tr>
+<tr><td class="tcat" colspan="2"><strong><a href="member.php?action=register">{$lang->need_reg}</a> &middot; <a href="member.php?action=lostpw">{$lang->forgot_password}</a></strong></td></tr>
 <tr>
 <td class="trow1" align="right" width="40%"><strong>{$lang->username}</strong></td>
 <td class="trow1"><input type="text" class="textbox" name="username" tabindex="1" /></td>
@@ -2357,7 +2359,7 @@ td.forum_on {
 	<input type="hidden" name="forums" value="{$fid}" />
 	<input type="hidden" name="postthread" value="1" />
 </form>]]></template>
-		<template name="header_welcomeblock_guest" version="1601"><![CDATA[<a href="{$mybb->settings['bburl']}/member.php?action=login">{$lang->welcome_login}</a>
+		<template name="header_welcomeblock_guest" version="1607"><![CDATA[<a href="{$mybb->settings['bburl']}/member.php?action=login">{$lang->welcome_login}</a>
 <a href="{$mybb->settings['bburl']}/member.php?action=register">{$lang->welcome_register}</a>]]></template>
 		<template name="nav_sep_active" version="1413"><![CDATA[>]]></template>
 		<template name="member_login" version="1601"><![CDATA[<html>
@@ -3341,7 +3343,7 @@ td.forum_on {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="postbit_posturl" version="1601"><![CDATA[<div style="float: right; width: auto; vertical-align: top"><img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.png" alt="" width="{$post['mobile']}6" height="{$post['mobile']}2" title="Arrow indicates this post was sent from GoMobile" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> <span class="smalltext"><strong>{$lang->postbit_post} <a href="{$post['postlink']}#pid{$post['pid']}">#{$postcounter}</a></strong>{$post['inlinecheck']}</span></div>]]></template>
+		<template name="postbit_posturl" version="1601"><![CDATA[<div style="float: right; width: auto; vertical-align: top"><img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.png" alt="" width="{$post['mobile']}6" height="{$post['mobile']}2" title="Arrow indicates this post was sent from GoMobile" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> <span class="smalltext"><strong>{$lang->postbit_post} <a href="{$post['postlink']}#pid{$post['pid']}">#{$postcounter}</a></strong>{$post['inlinecheck']}</span></div>]]></template>
 		<template name="modcp_announcements_global" version="1601"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 					<tr>
 						<td class="thead" colspan="3"><div class="float_right"><a href="modcp.php?action=new_announcement&amp;fid=-1">{$lang->add_global_announcement}</a></div><strong>{$lang->global_announcements}</strong></td>
@@ -3839,11 +3841,11 @@ td.forum_on {
 	&middot; <a href="#" class="mass_delete" onclick="$$('input.radio_delete').each(function(e) { e.checked = true; }); return false;">{$lang->mark_all_deletion}</a><br />
 	&middot; <a href="#" class="mass_approve" onclick="$$('input.radio_approve').each(function(e) { e.checked = true; }); return false;">{$lang->mark_all_approved}</a>
 </td></tr>]]></template>
-		<template name="modcp_reports_report" version="1601"><![CDATA[<tr>
+		<template name="modcp_reports_report" version="1607"><![CDATA[<tr>
 <td class="{$trow}"><input type="checkbox" class="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}" /> <a href="{$report['postlink']}#pid{$report['pid']}" target="_blank">{$lang->gomobile_mcp_pid}{$report['pid']}</a>{$lang->gomobile_mcp_in}<a href="{$report['threadlink']}" target="_blank">{$report['threadsubject']}</a><div class="lastbytext"><a href="{$report['posterlink']}" target="_blank">{$report['postusername']}</a></div></td>
 <td class="{$trow}">{$report['reason']}<div class="lastbytext"><a href="{$report['reporterlink']}" target="_blank">{$report['username']}</a></div></td>
 </tr>]]></template>
-		<template name="modcp_reports" version="1601"><![CDATA[<html>
+		<template name="modcp_reports" version="1607"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reported_posts}</title>
 {$headerinclude}
