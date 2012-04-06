@@ -68,6 +68,7 @@ $l['gomobile_by'] = "By: ";
 $l['gomobile_jump_fpost'] = "First Post";
 $l['gomobile_jump_lpost'] = "Last Post";
 $l['gomobile_votes'] = "Votes";
+$l['gomobile_error_message'] = "You don't have permission to access this page. Try logging in below, and if that doesn't work, maybe you're not supposed to be here.";
 
 $l['gomobile_ucp_username'] = "Username:";
 $l['gomobile_ucp_avatar'] = "Avatar:";
