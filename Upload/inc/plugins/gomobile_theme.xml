@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <theme name="MyBB GoMobile" version="1607">
 	<properties>
-		<templateset><![CDATA[2]]></templateset>
+		<templateset><![CDATA[19]]></templateset>
 		<editortheme><![CDATA[default]]></editortheme>
 		<imgdir><![CDATA[images/mobile]]></imgdir>
 		<logo><![CDATA[]]></logo>
@@ -35,6 +35,7 @@ ul.thread_tools li.subscription_remove a {
 }
 
 
+		
 		
 		
 		]]>
@@ -85,6 +86,7 @@ div.usercp_nav_item a {
 		
 		
 		
+		
 		]]>
 		</stylesheet>
 		<stylesheet name="modcp.css" attachedto="modcp.php" version="1607"><![CDATA[div.modcp_nav_item {
@@ -126,6 +128,7 @@ div.modcp_nav_item a {
 }
 
 
+		
 		
 		
 		
@@ -1032,15 +1035,11 @@ td.forum_on {
 
 		
 		
+		
 		]]>
 		</stylesheet>
 	</stylesheets>
 	<templates>
-		<template name="private_tracking_readmessage" version="1601"><![CDATA[<tr>
-<td class="trow1" width="1"><input type="checkbox" class="checkbox" name="readcheck[{$readmessage['pmid']}]" value="1" /></td>
-<td class="trow2">{$readmessage['subject']}<div class="lastbytext">{$readdate} {$readtime}</div></td>
-<td class="trow1" align="right">{$readmessage['profilelink']}</td>
-</tr>]]></template>
 		<template name="private_messagebit" version="1601"><![CDATA[<tr>
 <td class="trow2" align="center"><input type="checkbox" class="checkbox" name="check[{$message['pmid']}]" value="1" /></td>
 <td class="trow1">{$msgprefix}<a href="private.php?action=read&amp;pmid={$message['pmid']}">{$message['subject']}</a>{$msgsuffix}{$denyreceipt}<br /><span class="lastbytext">{$senddate} {$sendtime}</span></td>
@@ -1066,6 +1065,11 @@ td.forum_on {
 {$footer}
 </body>
 </html>]]></template>
+		<template name="private_tracking_readmessage" version="1601"><![CDATA[<tr>
+<td class="trow1" width="1"><input type="checkbox" class="checkbox" name="readcheck[{$readmessage['pmid']}]" value="1" /></td>
+<td class="trow2">{$readmessage['subject']}<div class="lastbytext">{$readdate} {$readtime}</div></td>
+<td class="trow1" align="right">{$readmessage['profilelink']}</td>
+</tr>]]></template>
 		<template name="postbit_delete_pm" version="1601"><![CDATA[<a href="private.php?action=delete&amp;pmid={$id}&amp;my_post_key={$mybb->post_code}" class="button">{$lang->gomobile_pm_delete}</a>]]></template>
 		<template name="postbit_forward_pm" version="1601"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=forward" class="button">{$lang->gomobile_pm_forward}</a>]]></template>
 		<template name="usercp_nav_messenger" version="1606"><![CDATA[]]></template>
@@ -1714,7 +1718,7 @@ td.forum_on {
 	{$attach_update_options} <input type="submit" class="button" name="newattachment" value="{$lang->add_attachment}" tabindex="13" />
 </td></tr>]]></template>
 		<template name="postbit_quote" version="1601"><![CDATA[<a href="newreply.php?tid={$tid}&amp;pid={$post['pid']}" class="button">{$lang->gomobile_post_quote}</a>]]></template>
-		<template name="index" version="1601"><![CDATA[<html>
+		<template name="index" version="1607"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']}</title>
 {$headerinclude}
@@ -1728,7 +1732,7 @@ td.forum_on {
 <body>
 {$header}
 {$forums}
-{$whosonline}
+{$boardstats}
 {$footer}
 </body>
 </html>]]></template>
@@ -1754,31 +1758,14 @@ td.forum_on {
 // -->
 </script>
 {$newpmmsg}]]></template>
-		<template name="index_boardstats" version="1606"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<thead>
+		<template name="index_boardstats" version="1607"><![CDATA[{$whosonline}
 <tr>
-<td class="thead">
-<strong>{$lang->boardstats}</strong>
-</td>
-</tr>
-</thead>
-<tbody id="boardstats_e">
-{$whosonline}
-{$birthdays}
-{$forumstats}
-<tr>
-	<td class="tfoot" style="text-align: right">
-		<span class="smalltext">
-			{$logoutlink}
-			<a href="misc.php?action=markread{$post_code_string}">{$lang->markread}</a> |
-			<a href="showteam.php">{$lang->forumteam}</a> |
-			<a href="stats.php">{$lang->forumstats}</a>
-		</span>
+	<td class="tfoot" style="text-align: center;">
+		<a href="misc.php?action=markread{$post_code_string}">{$lang->markread}</a>
 	</td>
 </tr>
 </tbody>
-</table>
-<br />]]></template>
+</table>]]></template>
 		<template name="showthread_newreply_closed" version="1413"><![CDATA[<div class="big_button">
 <a href="newreply.php?tid={$tid}" class="big_button_closed">{$lang->thread_closed}</a>
 </div>]]></template>
@@ -1861,18 +1848,13 @@ td.forum_on {
 	<label><input type="checkbox" class="checkbox" name="modoptions[closethread]" value="1"{$closecheck} /> {$lang->gomobile_modclose}</label><br />
 	<label><input type="checkbox" class="checkbox" name="modoptions[stickthread]" value="1"{$stickycheck} /> {$lang->gomobile_modstick}</label>
 </td></tr>]]></template>
-		<template name="index_whosonline" version="1601"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="index_whosonline" version="1607"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><a href="online.php"><strong>{$lang->whos_online}</strong></a></td>
 </tr>
 <tr>
 <td class="trow1">{$onlinemembers}</td>
-</tr>
-<tr>
-<td class="tfoot" align="center">
-<a href="misc.php?action=markread">{$lang->markread}</a>
-</td>
-</table>]]></template>
+</tr>]]></template>
 		<template name="newthread_disablesmilies" version="1601"><![CDATA[<br />
 <label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="9"{$postoptionschecked['disablesmilies']} /> {$lang->gomobile_disablesmilies}</label>]]></template>
 		<template name="member_profile_online" version="1413"><![CDATA[<a href="online.php"><span class="online" style="font-weight: bold;">{$lang->postbit_status_online}</span></a> ({$location_time})]]></template>
@@ -3343,7 +3325,7 @@ td.forum_on {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="postbit_posturl" version="1601"><![CDATA[<div style="float: right; width: auto; vertical-align: top"><img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.png" alt="" width="{$post['mobile']}6" height="{$post['mobile']}2" title="Arrow indicates this post was sent from GoMobile" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> <span class="smalltext"><strong>{$lang->postbit_post} <a href="{$post['postlink']}#pid{$post['pid']}">#{$postcounter}</a></strong>{$post['inlinecheck']}</span></div>]]></template>
+		<template name="postbit_posturl" version="1601"><![CDATA[<div style="float: right; width: auto; vertical-align: top"><img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.png" alt="" width="{$post['mobile']}6" height="{$post['mobile']}2" title="Arrow indicates this post was sent from GoMobile" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="Posted from GoMobile (when icon is displayed)" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> <img src="{$mybb->settings['bburl']}/images/mobile/posted_{$post['mobile']}.gif" alt="" width="{$post['mobile']}8" height="{$post['mobile']}8" title="{$lang->gomobile_posted_from}" style="vertical-align: middle;" /> <span class="smalltext"><strong>{$lang->postbit_post} <a href="{$post['postlink']}#pid{$post['pid']}">#{$postcounter}</a></strong>{$post['inlinecheck']}</span></div>]]></template>
 		<template name="modcp_announcements_global" version="1601"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 					<tr>
 						<td class="thead" colspan="3"><div class="float_right"><a href="modcp.php?action=new_announcement&amp;fid=-1">{$lang->add_global_announcement}</a></div><strong>{$lang->global_announcements}</strong></td>
