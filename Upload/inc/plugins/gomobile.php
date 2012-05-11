@@ -80,11 +80,11 @@ function gomobile_install()
 	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='gomobile_strings'");
 
 	// Add a column to the posts & threads tables for tracking mobile posts
-	$db->query("ALTER TABLE ".TABLE_PREFIX."posts ADD mobile int(1) NOT NULL default '0'");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD mobile int(1) NOT NULL default '0'");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."posts ADD mobile int NOT NULL default '0'");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."threads ADD mobile int NOT NULL default '0'");
 
 	// And another to the users table for options
-	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD usemobileversion int(1) NOT NULL default '1'");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD usemobileversion int NOT NULL default '1'");
 
 	// First, check that our theme doesn't already exist
 	$query = $db->simple_select("themes", "tid", "LOWER(name) LIKE '%mybb gomobile%'");
