@@ -3340,7 +3340,8 @@ td.forum_on {
 		<template name="online_today_row" version="1601"><![CDATA[<tr>
 <td class="trow1">{$online['profilelink']}{$invisiblemark} @ {$onlinetime}</td>
 </tr>]]></template>
-		<template name="showthread_poll" version="1606"><![CDATA[<form action="polls.php" method="post">
+		<template name="showthread_poll" version="1607"><![CDATA[<form action="polls.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="vote" />
 <input type="hidden" name="pid" value="{$poll['pid']}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
