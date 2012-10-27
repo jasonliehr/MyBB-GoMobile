@@ -4208,8 +4208,7 @@ td.forum_on {
 // -->
 </script>
 </div>]]></template>
-		<template name="htmldoctype" version="1602"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
+		<template name="htmldoctype" version="1602"><![CDATA[<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">]]></template>
 		<template name="post_attachments" version="1602"><![CDATA[{$newattach}
 {$attachments}]]></template>
