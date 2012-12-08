@@ -1,6 +1,6 @@
 <?php
 /*
-* MyBB GoMobile - 1.0
+* MyBB GoMobile - 1.1
 * Licensed under GNU/GPL v3
 */
 
@@ -12,6 +12,7 @@ if(!defined("IN_MYBB"))
 
 // Theme overriding
 $plugins->add_hook("global_start", "gomobile_forcetheme");
+$plugins->add_hook("global_end", "gomobile_fixcurrentpage");
 
 // Used to insert data into the posts/threads table for posts made via GoMobile
 $plugins->add_hook("datahandler_post_insert_post", "gomobile_posts");
@@ -41,7 +42,7 @@ function gomobile_info()
 		"website"		=> "http://www.mybbgm.com",
 		"author"		=> "MyBB GoMobile",
 		"authorsite"	=> "http://www.mybbgm.com",
-		"version"		=> "1.0",
+		"version"		=> "1.1",
 		"compatibility" => "16*"
 	);
 }
@@ -273,7 +274,22 @@ function gomobile_uninstall()
 // If so, it displays the GoMobile theme
 function gomobile_forcetheme()
 {
-	global $db, $mybb, $plugins, $cache, $lang;
+	global $db, $mybb, $plugins, $cache, $lang, $current_page;
+	
+	// We're going to work around the per forum theme setting by altering the $current_page value throughout global.php
+	// Then set it back to what it's supposed to be at global_end so it doesn't muck anything up (hopefully)
+	$valid = array(
+		"showthread.php", 
+		"forumdisplay.php",
+		"newthread.php",
+		"newreply.php",
+		"ratethread.php",
+		"editpost.php",
+		"polls.php",
+		"sendthread.php",
+		"printthread.php",
+		"moderation.php"
+	);
 	
 	$lang->load("gomobile");
 
@@ -356,6 +372,19 @@ function gomobile_forcetheme()
 	{
 		$mybb->user['style'] = $mybb->settings['gomobile_theme_id'];
 	}
+	
+	if(in_array($current_page, $valid) && $mybb->user['style'] == $mybb->settings['gomobile_theme_id'])
+	{
+		$current_page = "gomobile_temp";
+	}
+}
+
+// Undo the slight change we may have made earlier to get around per-forum themes
+function gomobile_fixcurrentpage()
+{
+	global $current_page;
+	
+	$current_page = my_strtolower(basename(THIS_SCRIPT));
 }
 
 // Add a link in the footer only if we're not a bot
