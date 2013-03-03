@@ -2363,7 +2363,7 @@ td.forum_on {
 <td class="trow1"><input type="text" class="textbox" name="username" size="25" maxlength="{$mybb->settings['maxnamelength']}" style="width: 140px;" value="{$username}" /></td>
 </tr>
 <tr>
-<td class="trow2"><strong>{$lang->password}</strong><br /><span class="smalltext">(Case Senstiive)</span></td>
+<td class="trow2"><strong>{$lang->password}</strong><br /><span class="smalltext">(Case Sensitive)</span></td>
 <td class="trow2"><input type="password" class="textbox" name="password" size="25" style="width: 140px;" value="{$password}" /><br /><span class="smalltext">(<a href="member.php?action=lostpw">{$lang->lostpw_note}</a>)</span></td>
 </tr>
 <tr><td class="trow1" style="text-align: center;" colspan="2"><label title="{$lang->remember_me_desc}"><input type="checkbox" class="checkbox" name="remember" checked="checked" value="yes" /> {$lang->remember_me}</label></td></tr>
